@@ -1,0 +1,249 @@
+resource "aws_iam_role" "lakeformation_workflow_role" {
+  name        = "LFWorkflowRole"
+  description = "Permissions to use LF Workflow feature"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "lakeformation.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  inline_policy {
+    name = "LFWorkflowPermissions"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "lakeformation:GetDataAccess",
+            "lakeformation:GrantPermissions"
+          ]
+          Resource = "*"
+        }
+      ]
+    })
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "lakeformation_workflow_role_attachment" {
+  role       = aws_iam_role.lakeformation_workflow_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+}
+
+resource "aws_iam_policy" "lf_workflow_pass_role_policy" {
+  name        = "LFWorkflowSelfPassRole"
+  description = "Policy to allow LFWorkflowRole to pass itself"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "iam:PassRole"
+        Resource = aws_iam_role.lakeformation_workflow_role.arn
+      }
+    ]
+  })
+
+  roles = [aws_iam_role.lakeformation_workflow_role.name]
+}
+
+resource "aws_iam_user" "datalake_admin" {
+  name = var.datalake_admin_name
+
+  login_profile {
+    password = var.datalake_admin_password
+  }
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AWSLakeFormationDataAdmin",
+    "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess",
+    "arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AWSLakeFormationCrossAccountManager",
+    "arn:aws:iam::aws:policy/AmazonAthenaFullAccess",
+    "arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess"
+  ]
+
+  inline_policy {
+    name = "LakeFormationSLR"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = "iam:CreateServiceLinkedRole"
+          Resource = "*"
+          Condition = {
+            StringEquals = {
+              "iam:AWSServiceName" = "lakeformation.amazonaws.com"
+            }
+          }
+        },
+        {
+          Effect = "Allow"
+          Action = "iam:PutRolePolicy"
+          Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
+        }
+      ]
+    })
+  }
+}
+
+resource "aws_iam_policy" "lf_user_pass_role_policy" {
+  name        = "LFUserPassRole"
+  description = "Policy to allow DatalakeAdmin to pass roles"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "iam:PassRole"
+        Resource = [
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess",
+          aws_iam_role.lakeformation_workflow_role.arn
+        ]
+      }
+    ]
+  })
+
+  users = [aws_iam_user.datalake_admin.name]
+}
+
+resource "aws_iam_policy" "lf_ram_access_policy" {
+  name        = "LFRamAccess"
+  description = "Policy to allow DatalakeAdmin to manage RAM"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ram:AcceptResourceShareInvitation",
+          "ram:RejectResourceShareInvitation",
+          "ec2:DescribeAvailabilityZones",
+          "ram:EnableSharingWithAwsOrganization"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+
+  users = [aws_iam_user.datalake_admin.name]
+}
+
+resource "aws_lakeformation_data_lake_settings" "datalake_settings" {
+  admins = [
+    aws_iam_user.datalake_admin.arn
+  ]
+}
+
+resource "aws_iam_user" "datalake_user1" {
+  name = var.datalake_user1_name
+
+  login_profile {
+    password = var.datalake_user1_password
+  }
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
+  ]
+
+  inline_policy {
+    name = "DatalakeUserBasic"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "lakeformation:GetDataAccess",
+            "glue:GetDatabase",
+            "glue:GetDatabases",
+            "glue:GetTable",
+            "glue:GetTables",
+            "glue:GetTableVersions",
+            "glue:SearchTables",
+            "glue:UpdateTable",
+            "glue:GetPartitions",
+            "lakeformation:GetResourceLFTags",
+            "lakeformation:ListLFTags",
+            "lakeformation:GetLFTag",
+            "lakeformation:SearchTablesByLFTag",
+            "lakeformation:SearchDatabasesByLFTags"
+          ]
+          Resource = "*"
+        }
+      ]
+    })
+  }
+}
+
+resource "aws_lakeformation_resource" "raw_datalake_location" {
+  arn = aws_s3_bucket.raw_bucket.arn
+  role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
+  use_service_linked_role = true
+}
+
+resource "aws_lakeformation_resource" "refined_datalake_location" {
+  arn = aws_s3_bucket.refined_bucket.arn
+  role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
+  use_service_linked_role = true
+}
+
+resource "aws_lakeformation_resource" "business_datalake_location" {
+  arn = aws_s3_bucket.business_bucket.arn
+  role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
+  use_service_linked_role = true
+}
+
+resource "aws_iam_policy" "lf_governed_table_policy" {
+  name        = "LFGovernedTablePolicy"
+  description = "Policy to allow DatalakeUser1 to use governed tables"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "glue:GetTable",
+          "glue:GetPartitions",
+          "glue:UpdateTable",
+          "lakeformation:StartTransaction",
+          "lakeformation:CommitTransaction",
+          "lakeformation:CancelTransaction",
+          "lakeformation:ExtendTransaction",
+          "lakeformation:DescribeTransaction",
+          "lakeformation:ListTransactions",
+          "lakeformation:GetTableObjects",
+          "lakeformation:UpdateTableObjects",
+          "lakeformation:DeleteObjectsOnCancel",
+          "lakeformation:StartQueryPlanning",
+          "lakeformation:GetQueryState",
+          "lakeformation:GetQueryStatistics",
+          "lakeformation:GetWorkUnits",
+          "lakeformation:GetWorkUnitResults",
+          "lakeformation:ListTableStorageOptimizers",
+          "lakeformation:UpdateTableStorageOptimizer"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws-lakeformation-acceleration/compaction/logs:*"
+      }
+    ]
+  })
+
+  users = [aws_iam_user.datalake_user1.name]
+}
