@@ -23,7 +23,7 @@ resource "aws_iam_role" "datalake_role" {
 }
 
 resource "aws_iam_policy" "datalake_policy" {
-  name        = var.dataleke_policy_name
+  name        = var.datalake_policy_name
   description = "Policy for Data Lake access"
 
   policy = jsonencode({

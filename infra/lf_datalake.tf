@@ -13,23 +13,24 @@ resource "aws_iam_role" "lakeformation_workflow_role" {
       }
     ]
   })
+}
 
-  inline_policy {
-    name = "LFWorkflowPermissions"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Effect = "Allow"
-          Action = [
-            "lakeformation:GetDataAccess",
-            "lakeformation:GrantPermissions"
-          ]
-          Resource = "*"
-        }
-      ]
-    })
-  }
+resource "aws_iam_role_policy" "lf_workflow_permissions" {
+  name = "LFWorkflowPermissions"
+  role = aws_iam_role.lakeformation_workflow_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "lakeformation:GetDataAccess",
+          "lakeformation:GrantPermissions"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "lakeformation_workflow_role_attachment" {
@@ -50,49 +51,58 @@ resource "aws_iam_policy" "lf_workflow_pass_role_policy" {
       }
     ]
   })
+}
 
-  roles = [aws_iam_role.lakeformation_workflow_role.name]
+resource "aws_iam_role_policy_attachment" "lf_workflow_pass_role_policy_attachment" {
+  role       = aws_iam_role.lakeformation_workflow_role.name
+  policy_arn = aws_iam_policy.lf_workflow_pass_role_policy.arn
 }
 
 resource "aws_iam_user" "datalake_admin" {
   name = var.datalake_admin_name
+}
 
-  login_profile {
-    password = var.datalake_admin_password
-  }
+resource "aws_iam_user_login_profile" "datalake_admin" {
+  user    = aws_iam_user.datalake_admin.name
+  # password = var.datalake_admin_password
+}
 
-  managed_policy_arns = [
+resource "aws_iam_user_policy_attachment" "datalake_admin_managed" {
+  for_each = toset([
     "arn:aws:iam::aws:policy/AWSLakeFormationDataAdmin",
     "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess",
     "arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess",
     "arn:aws:iam::aws:policy/AWSLakeFormationCrossAccountManager",
     "arn:aws:iam::aws:policy/AmazonAthenaFullAccess",
     "arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess"
-  ]
+  ])
+  user       = aws_iam_user.datalake_admin.name
+  policy_arn = each.value
+}
 
-  inline_policy {
-    name = "LakeFormationSLR"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Effect = "Allow"
-          Action = "iam:CreateServiceLinkedRole"
-          Resource = "*"
-          Condition = {
-            StringEquals = {
-              "iam:AWSServiceName" = "lakeformation.amazonaws.com"
-            }
+resource "aws_iam_user_policy" "datalake_admin_inline" {
+  name = "LakeFormationSLR"
+  user = aws_iam_user.datalake_admin.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "iam:CreateServiceLinkedRole"
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "iam:AWSServiceName" = "lakeformation.amazonaws.com"
           }
-        },
-        {
-          Effect = "Allow"
-          Action = "iam:PutRolePolicy"
-          Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
         }
-      ]
-    })
-  }
+      },
+      {
+        Effect = "Allow"
+        Action = "iam:PutRolePolicy"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_policy" "lf_user_pass_role_policy" {
@@ -111,8 +121,11 @@ resource "aws_iam_policy" "lf_user_pass_role_policy" {
       }
     ]
   })
+}
 
-  users = [aws_iam_user.datalake_admin.name]
+resource "aws_iam_user_policy_attachment" "datalake_admin_lf_user_pass_role" {
+  user       = aws_iam_user.datalake_admin.name
+  policy_arn = aws_iam_policy.lf_user_pass_role_policy.arn
 }
 
 resource "aws_iam_policy" "lf_ram_access_policy" {
@@ -133,8 +146,11 @@ resource "aws_iam_policy" "lf_ram_access_policy" {
       }
     ]
   })
+}
 
-  users = [aws_iam_user.datalake_admin.name]
+resource "aws_iam_user_policy_attachment" "datalake_admin_ram_access" {
+  user       = aws_iam_user.datalake_admin.name
+  policy_arn = aws_iam_policy.lf_ram_access_policy.arn
 }
 
 resource "aws_lakeformation_data_lake_settings" "datalake_settings" {
@@ -145,43 +161,41 @@ resource "aws_lakeformation_data_lake_settings" "datalake_settings" {
 
 resource "aws_iam_user" "datalake_user1" {
   name = var.datalake_user1_name
+}
 
-  login_profile {
-    password = var.datalake_user1_password
-  }
+resource "aws_iam_user_policy" "datalake_user1_basic" {
+  name = "DatalakeUserBasic"
+  user = aws_iam_user.datalake_user1.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "lakeformation:GetDataAccess",
+          "glue:GetDatabase",
+          "glue:GetDatabases",
+          "glue:GetTable",
+          "glue:GetTables",
+          "glue:GetTableVersions",
+          "glue:SearchTables",
+          "glue:UpdateTable",
+          "glue:GetPartitions",
+          "lakeformation:GetResourceLFTags",
+          "lakeformation:ListLFTags",
+          "lakeformation:GetLFTag",
+          "lakeformation:SearchTablesByLFTag",
+          "lakeformation:SearchDatabasesByLFTags"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
 
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
-  ]
-
-  inline_policy {
-    name = "DatalakeUserBasic"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Effect = "Allow"
-          Action = [
-            "lakeformation:GetDataAccess",
-            "glue:GetDatabase",
-            "glue:GetDatabases",
-            "glue:GetTable",
-            "glue:GetTables",
-            "glue:GetTableVersions",
-            "glue:SearchTables",
-            "glue:UpdateTable",
-            "glue:GetPartitions",
-            "lakeformation:GetResourceLFTags",
-            "lakeformation:ListLFTags",
-            "lakeformation:GetLFTag",
-            "lakeformation:SearchTablesByLFTag",
-            "lakeformation:SearchDatabasesByLFTags"
-          ]
-          Resource = "*"
-        }
-      ]
-    })
-  }
+resource "aws_iam_user_policy_attachment" "datalake_user1_athena_access" {
+  user       = aws_iam_user.datalake_user1.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
 }
 
 resource "aws_lakeformation_resource" "raw_datalake_location" {
@@ -244,6 +258,9 @@ resource "aws_iam_policy" "lf_governed_table_policy" {
       }
     ]
   })
+}
 
-  users = [aws_iam_user.datalake_user1.name]
+resource "aws_iam_user_policy_attachment" "datalake_user1_governed_table" {
+  user       = aws_iam_user.datalake_user1.name
+  policy_arn = aws_iam_policy.lf_governed_table_policy.arn
 }

@@ -1,10 +1,10 @@
 control_account = "331504768406"
 
-user_lake_admin_arn = "arn:aws:iam::331504768406:user/lake-admin"
+lake_admin_arn = "arn:aws:iam::331504768406:user/lake-admin"
 datalake_role_arn = "arn:aws:iam::331504768406:role/role-datalake-analytics"
 
 datalake_role_name = "role-datalake-analytics"
-dataleke_policy_name = "datalake-policy"
+datalake_policy_name = "datalake-policy"
 
 workspace_bucket = "lakehouse-workspace-331504768406"
 raw_bucket = "lakehouse-raw-331504768406"
