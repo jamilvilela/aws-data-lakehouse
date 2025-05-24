@@ -1,15 +1,17 @@
-resource "aws_s3_bucket" "refined_bucket" {
-  bucket = var.refined_bucket
+resource "aws_s3_bucket" "workspace_bucket" {
+  bucket = var.buckets.workspace
   force_destroy = true        
 
-  tags = {
-    Name        = var.refined_bucket
-    Environment = "dev"
-  }
+  tags = merge(
+    var.tags,
+    {
+      Name = var.buckets.workspace
+    }
+  )
 }
 
-resource "aws_s3_bucket_public_access_block" "refined_bucket_public_access_block" {
-  bucket = aws_s3_bucket.refined_bucket.id
+resource "aws_s3_bucket_public_access_block" "workspace_bucket" {
+  bucket = aws_s3_bucket.workspace_bucket.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -17,8 +19,8 @@ resource "aws_s3_bucket_public_access_block" "refined_bucket_public_access_block
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "refined-bucket-config" {
-  bucket = aws_s3_bucket.refined_bucket.id
+resource "aws_s3_bucket_lifecycle_configuration" "bucket-config" {
+  bucket = aws_s3_bucket.workspace_bucket.id
 
   rule {
     id = "lifecycle"

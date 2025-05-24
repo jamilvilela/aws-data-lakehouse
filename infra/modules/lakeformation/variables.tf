@@ -12,10 +12,6 @@ variable "datalake_role_arn" {
   type = string
 }
 
-variable "datalake_role_name" {
-  type = string  
-}
-
 variable "datalake_policy_name" {
   type = string  
 }
@@ -31,6 +27,26 @@ variable "buckets" {
     business  = string
   })
 }
+
+# variable "workspace_bucket" {
+#   description = "Name of the workspace S3 bucket"
+#   type        = string
+# }
+
+# variable "raw_bucket" {
+#   description = "Name of the raw S3 bucket"
+#   type        = string
+# }
+
+# variable "refined_bucket" {
+#   description = "Name of the refined S3 bucket"
+#   type        = string
+# }
+
+# variable "business_bucket" {
+#   description = "Name of the business S3 bucket"
+#   type        = string
+# }
 
 ############################################
 # Glue Catalog variables

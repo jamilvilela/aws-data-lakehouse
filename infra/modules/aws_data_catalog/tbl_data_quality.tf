@@ -1,22 +1,22 @@
 resource "aws_glue_catalog_table" "dataquality_metrics" {
-  depends_on = [ aws_glue_catalog_database.db_raw ]
-  name          = var.tabela_data_quality
-  database_name = var.raw_db_name
+  depends_on    = [aws_glue_catalog_database.db_raw]
+  name          = var.tables.data_quality
+  database_name = var.databases.raw
   catalog_id    = var.control_account
   table_type    = "EXTERNAL_TABLE"
   parameters = {
     classification = "parquet"
   }
   partition_keys {
-    name = "dt_referencia"
+    name = "reference_date"
     type = "date"
   }
   storage_descriptor {
-    location      = "${var.raw_bucket}/tables/${var.tabela_data_quality}"
+    location      = "${var.buckets.raw}/tables/${var.tables.data_quality}/"
     input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
     output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
     ser_de_info {
-      name                  = var.tabela_data_quality
+      name                  = var.tables.data_quality
       serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
       parameters = {
         "serialization.format" = 1
@@ -25,47 +25,47 @@ resource "aws_glue_catalog_table" "dataquality_metrics" {
     columns {
       name    = "database"
       type    = "string"
-      comment = "Nome da base de dados avaliada"
+      comment = "Name of the evaluated database"
     }
     columns {
-      name    = "ts_processamento"
+      name    = "processing_timestamp"
       type    = "timestamp"
-      comment = "Data e hora de processamento"
+      comment = "Processing date and time"
     }
     columns {
-      name    = "st_metrica"
+      name    = "metric"
       type    = "string"
-      comment = "Metrica avaliadas"
+      comment = "Evaluated metric"
     }
     columns {
-      name    = "st_motivo_falha"
+      name    = "failure_reason"
       type    = "string"
-      comment = "Razão da falha da avaliação"
+      comment = "Reason for evaluation failure"
     }
     columns {
-      name    = "st_status"
+      name    = "status"
       type    = "string"
-      comment = "Status da avaliação"
+      comment = "Evaluation status"
     }
     columns {
-      name    = "st_particao"
+      name    = "partition"
       type    = "string"
-      comment = "Identificação da partição avaliada da tabela"
+      comment = "Evaluated table partition identification"
     }
     columns {
-      name    = "st_regra"
+      name    = "rule"
       type    = "string"
-      comment = "Regra de avaliação aplicada"
+      comment = "Applied evaluation rule"
     }
     columns {
-      name    = "st_tabela"
+      name    = "table"
       type    = "string"
-      comment = "Nome da tabela avaliada"
+      comment = "Name of the evaluated table"
     }
     columns {
-      name    = "st_tecnologia"
+      name    = "technology"
       type    = "string"
-      comment = "Nome da tecnologia da base de dados avaliada"
+      comment = "Name of the evaluated database technology"
     }
   }
 }

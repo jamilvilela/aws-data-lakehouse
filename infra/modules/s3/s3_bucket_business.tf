@@ -1,11 +1,13 @@
 resource "aws_s3_bucket" "business_bucket" {
-  bucket = var.business_bucket
+  bucket        = var.buckets.business
   force_destroy = true        
 
-  tags = {
-    Name        = var.business_bucket
-    Environment = "dev"
-  }
+  tags = merge(
+    var.tags,
+    {
+      Name = var.buckets.business
+    }
+  )
 }
 
 resource "aws_s3_bucket_public_access_block" "business_bucket_public_access_block" {

@@ -58,13 +58,14 @@ resource "aws_iam_role_policy_attachment" "lf_workflow_pass_role_policy_attachme
   policy_arn = aws_iam_policy.lf_workflow_pass_role_policy.arn
 }
 
+
 resource "aws_iam_user" "datalake_admin" {
   name = var.datalake_admin_name
 }
 
 resource "aws_iam_user_login_profile" "datalake_admin" {
   user    = aws_iam_user.datalake_admin.name
-  # password = var.datalake_admin_password
+  password_reset_required = true
 }
 
 resource "aws_iam_user_policy_attachment" "datalake_admin_managed" {
@@ -163,6 +164,11 @@ resource "aws_iam_user" "datalake_user1" {
   name = var.datalake_user1_name
 }
 
+resource "aws_iam_user_login_profile" "datalake_user1" {
+  user                      = aws_iam_user.datalake_user1.name
+  password_reset_required   = true
+}
+
 resource "aws_iam_user_policy" "datalake_user1_basic" {
   name = "DatalakeUserBasic"
   user = aws_iam_user.datalake_user1.name
@@ -199,19 +205,19 @@ resource "aws_iam_user_policy_attachment" "datalake_user1_athena_access" {
 }
 
 resource "aws_lakeformation_resource" "raw_datalake_location" {
-  arn = aws_s3_bucket.raw_bucket.arn
+  arn = var.raw_bucket
   role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
   use_service_linked_role = true
 }
 
 resource "aws_lakeformation_resource" "refined_datalake_location" {
-  arn = aws_s3_bucket.refined_bucket.arn
+  arn = var.refined_bucket
   role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
   use_service_linked_role = true
 }
 
 resource "aws_lakeformation_resource" "business_datalake_location" {
-  arn = aws_s3_bucket.business_bucket.arn
+  arn = var.business_bucket
   role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
   use_service_linked_role = true
 }

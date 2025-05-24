@@ -3,10 +3,10 @@ resource "aws_lakeformation_permissions" "grant_dml_db_raw" {
   principal       = var.datalake_role_arn
   catalog_id      = var.control_account
   table {
-    database_name = var.raw_db_name
+    database_name = var.databases.raw
     wildcard      = true
   }
-  depends_on = [aws_iam_role.datalake_role, aws_glue_catalog_database.db_raw]
+  depends_on = [aws_glue_catalog_database.db_raw]
 }
 
 resource "aws_lakeformation_permissions" "grant_dml_db_refined" {
@@ -14,10 +14,10 @@ resource "aws_lakeformation_permissions" "grant_dml_db_refined" {
   principal       = var.datalake_role_arn
   catalog_id      = var.control_account
   table {
-    database_name = var.refined_db_name
+    database_name = var.databases.refined
     wildcard      = true
   }
-  depends_on = [aws_iam_role.datalake_role, aws_glue_catalog_database.db_refined]
+  depends_on = [aws_glue_catalog_database.db_refined]
 }
 
 resource "aws_lakeformation_permissions" "grant_dml_db_business" {
@@ -25,10 +25,10 @@ resource "aws_lakeformation_permissions" "grant_dml_db_business" {
   principal       = var.datalake_role_arn
   catalog_id      = var.control_account
   table {
-    database_name = var.business_db_name
+    database_name = var.databases.business
     wildcard      = true
   }
-  depends_on = [aws_iam_role.datalake_role, aws_glue_catalog_database.db_business]
+  depends_on = [aws_glue_catalog_database.db_business]
 }
 
 // Adicionar permissões para o usuário lake_admin para consultas via Athena
@@ -38,11 +38,9 @@ resource "aws_lakeformation_permissions" "grant_select_lake_admin_raw" {
   catalog_id      = var.control_account
 
   table {
-    database_name = var.raw_db_name
+    database_name = var.databases.raw
     wildcard      = true
   }
-
-  depends_on = [aws_iam_role.datalake_role, aws_glue_catalog_database.db_raw]
 }
 
 resource "aws_lakeformation_permissions" "grant_select_lake_admin_refined" {
@@ -51,11 +49,9 @@ resource "aws_lakeformation_permissions" "grant_select_lake_admin_refined" {
   catalog_id      = var.control_account
 
   table {
-    database_name = var.refined_db_name
+    database_name = var.databases.refined
     wildcard      = true
   }
-
-  depends_on = [aws_iam_role.datalake_role, aws_glue_catalog_database.db_refined]
 }
 
 resource "aws_lakeformation_permissions" "grant_select_lake_admin_business" {
@@ -64,9 +60,7 @@ resource "aws_lakeformation_permissions" "grant_select_lake_admin_business" {
   catalog_id      = var.control_account
 
   table {
-    database_name = var.business_db_name
+    database_name = var.databases.business
     wildcard      = true
   }
-
-  depends_on = [aws_iam_role.datalake_role, aws_glue_catalog_database.db_business]
 }

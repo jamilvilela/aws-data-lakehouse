@@ -1,31 +1,31 @@
 output "raw_bucket_arn" {
-  value = aws_s3_bucket.raw_bucket.arn
+  value = module.s3.raw_bucket_arn
 }
 
 output "refined_bucket_arn" {
-  value = aws_s3_bucket.refined_bucket.arn
+  value = module.s3.refined_bucket_arn
 }
 
 output "business_bucket_arn" {
-  value = aws_s3_bucket.business_bucket.arn
+  value = module.s3.business_bucket_arn
 }
 
 output "datalake_role_arn" {
-  description = "ARN da role principal do Data Lake"
-  value       = aws_iam_role.datalake_role.arn
+  description = "ARN of the main Data Lake role"
+  value       = module.iam.datalake_role_arn
 }
 
 output "lakeformation_workflow_role_arn" {
-  description = "ARN da role do Lake Formation Workflow"
-  value       = aws_iam_role.lakeformation_workflow_role.arn
+  description = "ARN of the Lake Formation Workflow role"
+  value       = module.lakeformation.lakeformation_workflow_role_arn
 }
 
 output "datalake_admin_user_arn" {
-  description = "ARN do usuário admin do Data Lake"
-  value       = aws_iam_user.datalake_admin.arn
+  description = "ARN of the Data Lake admin user"
+  value       = module.lakeformation.datalake_admin_user_arn
 }
 
 output "datalake_user1_arn" {
-  description = "ARN do usuário Datalake User1"
-  value       = aws_iam_user.datalake_user1.arn
+  description = "ARN of the Datalake User1 user"
+  value       = module.lakeformation.datalake_user1_arn
 }
