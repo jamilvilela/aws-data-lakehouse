@@ -20,9 +20,16 @@ databases = {
 }
 
 tables = {
-  control      = "etl_control"
+  etl_control  = "etl_control"
   data_quality = "data_quality_metrics"
 }
 
-
+users = {
+  datalake_admin = {
+    name = "lake-admin"
+  }
+  datalake_user1 = {
+    name = "lake-user-01"
+  }
+}
 

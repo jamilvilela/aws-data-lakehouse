@@ -23,7 +23,7 @@ output "business_datalake_location_arn" {
   value       = aws_lakeformation_resource.business_datalake_location.arn
 }
 
-output "datalake_admin_user_arn" {
+output "datalake_admin_arn" {
   description = "ARN of the Data Lake admin user"
   value       = aws_iam_user.datalake_admin.arn
 }

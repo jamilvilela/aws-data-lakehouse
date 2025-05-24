@@ -3,10 +3,6 @@ variable "control_account" {
   description = "AWS account ID for the Glue Catalog."
 }
 
-variable "datalake_role_name" {
-  type        = string
-  description = "Name of the Data Lake IAM role."
-}
 variable "datalake_role_arn" {
   type = string
 }

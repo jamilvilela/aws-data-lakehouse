@@ -20,9 +20,9 @@ output "lakeformation_workflow_role_arn" {
   value       = module.lakeformation.lakeformation_workflow_role_arn
 }
 
-output "datalake_admin_user_arn" {
+output "datalake_admin_arn" {
   description = "ARN of the Data Lake admin user"
-  value       = module.lakeformation.datalake_admin_user_arn
+  value       = module.lakeformation.datalake_admin_arn
 }
 
 output "datalake_user1_arn" {

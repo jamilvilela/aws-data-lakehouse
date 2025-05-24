@@ -9,3 +9,7 @@ output "refined_bucket_arn" {
 output "business_bucket_arn" {
   value = aws_s3_bucket.business_bucket.arn
 }
+
+output "workspace_bucket_arn" {
+  value = aws_s3_bucket.workspace_bucket.arn
+}
