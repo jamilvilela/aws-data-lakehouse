@@ -23,7 +23,7 @@ resource "aws_iam_role" "datalake_role" {
 }
 
 resource "aws_iam_policy" "datalake_policy" {
-  name        = var.dataleke_policy_name
+  name        = var.datalake_policy_name
   description = "Policy for Data Lake access"
 
   policy = jsonencode({
@@ -39,11 +39,8 @@ resource "aws_iam_policy" "datalake_policy" {
         ]
         Resource = [
           "arn:aws:s3:::lakehouse-raw-*",
-          "arn:aws:s3:::lakehouse-raw-*/*",
           "arn:aws:s3:::lakehouse-refined-*",
-          "arn:aws:s3:::lakehouse-refined-*/*",
           "arn:aws:s3:::lakehouse-business-*",
-          "arn:aws:s3:::lakehouse-business-*/*"
         ]
       },
       {
@@ -83,9 +80,7 @@ resource "aws_iam_policy" "datalake_policy" {
         Effect = "Allow"
         Action = [
           "sns:Publish",
-          "sns:Subscribe",
-          "sns:Receive",
-          "sns:DeleteTopic"
+          "sns:Subscribe"
         ]
         Resource = "*"
       },
@@ -104,14 +99,16 @@ resource "aws_iam_policy" "datalake_policy" {
         Action = [
           "lakeformation:GetDataAccess",
           "lakeformation:GrantPermissions",
-          "lakeformation:RevokePermissions",
-          "lakeformation:CreateTable",
-          "lakeformation:DeleteTable",
-          "lakeformation:UpdateTable"
+          "lakeformation:RevokePermissions"
         ]
         Resource = "*"
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "datalake_policy_attachment" {
+  role       = aws_iam_role.datalake_role.name
+  policy_arn = aws_iam_policy.datalake_policy.arn
 }
 
