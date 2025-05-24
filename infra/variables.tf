@@ -10,10 +10,10 @@ variable "user_datalake_admin_name" {
   default     = "DatalakeAdmin1"
 }
 
-variable "user_datalake_admin_password" {
-  type        = string
-  description = "IAM user console password for this blog tutorial."
-}
+# variable "user_datalake_admin_password" {
+#   type        = string
+#   description = "IAM user console password for this blog tutorial."
+# }
 
 variable "user_datalake_user1_name" {
   type        = string
@@ -21,10 +21,10 @@ variable "user_datalake_user1_name" {
   default     = "DatalakeUser1"
 }
 
-variable "user_datalake_user1_password" {
-  type        = string
-  description = "IAM user console password for this blog tutorial."
-}
+# variable "user_datalake_user1_password" {
+#   type        = string
+#   description = "IAM user console password for this blog tutorial."
+# }
 
 variable "user_lake_admin_arn" {
   type = string  
@@ -38,7 +38,7 @@ variable "datalake_role_name" {
   type = string  
 }
 
-variable "dataleke_policy_name" {
+variable "datalake_policy_name" {
   type = string  
 }
 
