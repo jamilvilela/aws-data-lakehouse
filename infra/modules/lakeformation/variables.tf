@@ -4,12 +4,12 @@ variable "control_account" {
 
 ############################################
 # IAM variables
-# variable "lake_admin_arn" {
-#   type = string  
-# }
-
-variable "datalake_role_name" {
+variable "lake_admin_arn" {
   type = string  
+}
+
+variable "datalake_role_arn" {
+  type = string
 }
 
 variable "datalake_policy_name" {
@@ -18,14 +18,34 @@ variable "datalake_policy_name" {
 
 ############################################
 # S3 bucket variables
-variable "buckets" {
-  description = "S3 buckets for the data lake"
-  type = object({
-    workspace = string
-    raw       = string
-    refined   = string
-    business  = string
-  })
+# variable "buckets" {
+#   description = "S3 buckets for the data lake"
+#   type = object({
+#     workspace = string
+#     raw       = string
+#     refined   = string
+#     business  = string
+#   })
+# }
+
+variable "workspace_bucket_arn" {
+  description = "ARN of the workspace S3 bucket"
+  type        = string
+}
+
+variable "raw_bucket_arn" {
+  description = "ARN of the raw S3 bucket"
+  type        = string
+}
+
+variable "refined_bucket_arn" {
+  description = "ARN of the refined S3 bucket"
+  type        = string
+}
+
+variable "business_bucket_arn" {
+  description = "ARN of the business S3 bucket"
+  type        = string
 }
 
 ############################################

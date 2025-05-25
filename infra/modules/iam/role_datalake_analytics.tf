@@ -40,7 +40,11 @@ resource "aws_iam_policy" "datalake_policy" {
         Resource = [
           "arn:aws:s3:::lakehouse-raw-*",
           "arn:aws:s3:::lakehouse-refined-*",
+<<<<<<< HEAD:infra/iam_role_datalake_analytics.tf
           "arn:aws:s3:::lakehouse-business-*",
+=======
+          "arn:aws:s3:::lakehouse-business-*"
+>>>>>>> create-lakeformation:infra/modules/iam/role_datalake_analytics.tf
         ]
       },
       {

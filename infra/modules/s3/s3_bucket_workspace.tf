@@ -1,11 +1,13 @@
 resource "aws_s3_bucket" "workspace_bucket" {
-  bucket = var.workspace_bucket
+  bucket = var.buckets.workspace
   force_destroy = true        
 
-  tags = {
-    Name        = var.workspace_bucket
-    Environment = "dev"
-  }
+  tags = merge(
+    var.tags,
+    {
+      Name = var.buckets.workspace
+    }
+  )
 }
 
 resource "aws_s3_bucket_public_access_block" "workspace_bucket" {

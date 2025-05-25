@@ -1,15 +1,17 @@
-resource "aws_s3_bucket" "refined_bucket" {
-  bucket = var.refined_bucket
+resource "aws_s3_bucket" "raw_bucket" {
+  bucket = var.buckets.raw
   force_destroy = true        
 
-  tags = {
-    Name        = var.refined_bucket
-    Environment = "dev"
-  }
+  tags = merge(
+    var.tags,
+    {
+      Name = var.buckets.raw
+    }
+  )
 }
 
-resource "aws_s3_bucket_public_access_block" "refined_bucket_public_access_block" {
-  bucket = aws_s3_bucket.refined_bucket.id
+resource "aws_s3_bucket_public_access_block" "raw_bucket_public_access_block" {
+  bucket = aws_s3_bucket.raw_bucket.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -17,8 +19,8 @@ resource "aws_s3_bucket_public_access_block" "refined_bucket_public_access_block
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "refined-bucket-config" {
-  bucket = aws_s3_bucket.refined_bucket.id
+resource "aws_s3_bucket_lifecycle_configuration" "raw-bucket-config" {
+  bucket = aws_s3_bucket.raw_bucket.id
 
   rule {
     id = "lifecycle"
