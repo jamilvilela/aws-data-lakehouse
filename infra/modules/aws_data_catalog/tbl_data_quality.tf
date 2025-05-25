@@ -12,7 +12,7 @@ resource "aws_glue_catalog_table" "dataquality_metrics" {
     type = "date"
   }
   storage_descriptor {
-    location      = "${var.buckets.raw}/tables/${var.tables.data_quality}/"
+    location      = "s3://${var.buckets.raw}/tables/${var.tables.data_quality}/"
     input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
     output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
     ser_de_info {

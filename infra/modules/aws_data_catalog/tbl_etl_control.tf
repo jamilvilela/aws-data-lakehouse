@@ -16,7 +16,7 @@ resource "aws_glue_catalog_table" "etl_execution_control" {
   }
 
   storage_descriptor {
-    location      = "${var.buckets.raw}/tables/${var.tables.etl_control}/"
+    location      = "s3://${var.buckets.raw}/tables/${var.tables.etl_control}/"
     input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
     output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
 

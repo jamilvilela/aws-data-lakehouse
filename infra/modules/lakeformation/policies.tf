@@ -20,7 +20,7 @@ resource "aws_iam_role_policy_attachment" "lf_workflow_pass_role_policy_attachme
 
 resource "aws_iam_policy" "lf_user_pass_role_policy" {
   name        = "LFUserPassRole"
-  description = "Policy to allow DatalakeAdmin to pass roles"
+  description = "Policy to allow datalake-admin to pass roles"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -38,7 +38,7 @@ resource "aws_iam_policy" "lf_user_pass_role_policy" {
 
 resource "aws_iam_policy" "lf_ram_access_policy" {
   name        = "LFRamAccess"
-  description = "Policy to allow DatalakeAdmin to manage RAM"
+  description = "Policy to allow datalake-admin to manage RAM"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -58,7 +58,7 @@ resource "aws_iam_policy" "lf_ram_access_policy" {
 
 resource "aws_iam_policy" "lf_governed_table_policy" {
   name        = "LFGovernedTablePolicy"
-  description = "Policy to allow DatalakeUser1 to use governed tables"
+  description = "Policy to allow datalake-user-01 to use governed tables"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

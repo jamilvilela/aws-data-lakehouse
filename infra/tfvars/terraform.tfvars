@@ -26,10 +26,10 @@ tables = {
 
 users = {
   datalake_admin = {
-    name = "lake-admin"
+    name = "datalake-admin"
   }
   datalake_user1 = {
-    name = "lake-user-01"
+    name = "datalake-user-01"
   }
 }
 

@@ -1,0 +1,5 @@
+resource "aws_lakeformation_data_lake_settings" "datalake_settings" {
+  admins = [
+    "arn:aws:iam::331504768406:user/lake-admin"
+  ]
+}

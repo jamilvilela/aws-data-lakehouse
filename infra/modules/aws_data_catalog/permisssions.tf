@@ -41,6 +41,7 @@ resource "aws_lakeformation_permissions" "grant_select_lake_admin_raw" {
     database_name = var.databases.raw
     wildcard      = true
   }
+  depends_on = [aws_glue_catalog_database.db_raw]
 }
 
 resource "aws_lakeformation_permissions" "grant_select_lake_admin_refined" {
@@ -52,6 +53,7 @@ resource "aws_lakeformation_permissions" "grant_select_lake_admin_refined" {
     database_name = var.databases.refined
     wildcard      = true
   }
+  depends_on = [aws_glue_catalog_database.db_refined]
 }
 
 resource "aws_lakeformation_permissions" "grant_select_lake_admin_business" {
@@ -63,4 +65,5 @@ resource "aws_lakeformation_permissions" "grant_select_lake_admin_business" {
     database_name = var.databases.business
     wildcard      = true
   }
+  depends_on = [aws_glue_catalog_database.db_business]
 }

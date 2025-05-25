@@ -39,11 +39,8 @@ resource "aws_iam_policy" "datalake_policy" {
         ]
         Resource = [
           "arn:aws:s3:::lakehouse-raw-*",
-          "arn:aws:s3:::lakehouse-raw-*/*",
           "arn:aws:s3:::lakehouse-refined-*",
-          "arn:aws:s3:::lakehouse-refined-*/*",
-          "arn:aws:s3:::lakehouse-business-*",
-          "arn:aws:s3:::lakehouse-business-*/*"
+          "arn:aws:s3:::lakehouse-business-*"
         ]
       },
       {
