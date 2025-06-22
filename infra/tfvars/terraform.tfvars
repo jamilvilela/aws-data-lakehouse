@@ -8,6 +8,7 @@ datalake_policy_name = "datalake-policy"
 
 buckets = {
   workspace = "lakehouse-workspace-331504768406"
+  landing   = "lakehouse-landing-331504768406"
   raw       = "lakehouse-raw-331504768406"
   refined   = "lakehouse-refined-331504768406"
   business  = "lakehouse-business-331504768406"

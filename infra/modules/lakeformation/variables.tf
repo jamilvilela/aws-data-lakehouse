@@ -16,17 +16,6 @@ variable "datalake_policy_name" {
   type = string  
 }
 
-############################################
-# S3 bucket variables
-# variable "buckets" {
-#   description = "S3 buckets for the data lake"
-#   type = object({
-#     workspace = string
-#     raw       = string
-#     refined   = string
-#     business  = string
-#   })
-# }
 
 variable "workspace_bucket_arn" {
   description = "ARN of the workspace S3 bucket"

@@ -4,9 +4,6 @@ variable "control_account" {
 
 ############################################
 # IAM variables
-# variable "lake_admin_arn" {
-#   type = string  
-# }
 
 variable "datalake_role_name" {
   type = string  

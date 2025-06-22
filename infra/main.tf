@@ -34,7 +34,6 @@ module "aws_data_catalog" {
   buckets                = var.buckets
   databases              = var.databases
   tables                 = var.tables
-  # lake_admin_arn         = module.lakeformation.datalake_admin_arn
   lake_admin_arn         = "arn:aws:iam::331504768406:user/lake-admin"
 
   depends_on = [module.iam, module.lakeformation, module.s3]
