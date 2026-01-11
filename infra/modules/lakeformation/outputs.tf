@@ -13,9 +13,9 @@ output "raw_datalake_location_arn" {
   value       = aws_lakeformation_resource.raw_datalake_location.arn
 }
 
-output "refined_datalake_location_arn" {
-  description = "ARN of the Lake Formation resource for the refined bucket"
-  value       = aws_lakeformation_resource.refined_datalake_location.arn
+output "trusted_datalake_location_arn" {
+  description = "ARN of the Lake Formation resource for the trusted bucket"
+  value       = aws_lakeformation_resource.trusted_datalake_location.arn
 }
 
 output "business_datalake_location_arn" {

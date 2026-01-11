@@ -19,8 +19,9 @@ variable "buckets" {
   description = "S3 buckets for the data lake"
   type = object({
     workspace = string
+    landing   = string
     raw       = string
-    refined   = string
+    trusted   = string
     business  = string
   })
 }
@@ -31,7 +32,7 @@ variable "databases" {
   description = "Glue databases for the data lake"
   type = object({
     raw      = string
-    refined  = string
+    trusted  = string
     business = string
   })
 }

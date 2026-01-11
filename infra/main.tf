@@ -20,7 +20,7 @@ module "lakeformation" {
   datalake_policy_name   = var.datalake_policy_name
   workspace_bucket_arn   = module.s3.workspace_bucket_arn
   raw_bucket_arn         = module.s3.raw_bucket_arn
-  refined_bucket_arn     = module.s3.refined_bucket_arn
+  trusted_bucket_arn     = module.s3.trusted_bucket_arn
   business_bucket_arn    = module.s3.business_bucket_arn
   lake_admin_arn         = "arn:aws:iam::331504768406:user/lake-admin"
 
@@ -28,7 +28,7 @@ module "lakeformation" {
 }
 
 module "aws_data_catalog" {
-  source                 = "./modules/aws_data_catalog"
+  source                 = "./modules/data_catalog"
   control_account        = var.control_account
   datalake_role_arn      = module.iam.datalake_role_arn
   buckets                = var.buckets

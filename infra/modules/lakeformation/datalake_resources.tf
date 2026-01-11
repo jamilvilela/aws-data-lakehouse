@@ -4,8 +4,8 @@ resource "aws_lakeformation_resource" "raw_datalake_location" {
   use_service_linked_role = true
 }
 
-resource "aws_lakeformation_resource" "refined_datalake_location" {
-  arn = var.refined_bucket_arn
+resource "aws_lakeformation_resource" "trusted_datalake_location" {
+  arn = var.trusted_bucket_arn
   role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
   use_service_linked_role = true
 }

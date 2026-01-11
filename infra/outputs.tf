@@ -1,9 +1,13 @@
+output "landing_bucket_arn" {
+  value = module.s3.landing_bucket_arn
+}
+
 output "raw_bucket_arn" {
   value = module.s3.raw_bucket_arn
 }
 
-output "refined_bucket_arn" {
-  value = module.s3.refined_bucket_arn
+output "trusted_bucket_arn" {
+  value = module.s3.trusted_bucket_arn
 }
 
 output "business_bucket_arn" {

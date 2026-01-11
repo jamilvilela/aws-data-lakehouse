@@ -1,18 +1,18 @@
-resource "aws_s3_bucket" "refined_bucket" {
-  bucket = var.buckets.refined
+resource "aws_s3_bucket" "trusted_bucket" {
+  bucket = var.buckets.trusted
   force_destroy = true        
 
   tags = merge(
     var.tags,
     {
-      Name = var.buckets.refined
+      Name = var.buckets.trusted
     }
   )
 }
 
 
-resource "aws_s3_bucket_public_access_block" "refined_bucket_public_access_block" {
-  bucket = aws_s3_bucket.refined_bucket.id
+resource "aws_s3_bucket_public_access_block" "trusted_bucket_public_access_block" {
+  bucket = aws_s3_bucket.trusted_bucket.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -20,8 +20,8 @@ resource "aws_s3_bucket_public_access_block" "refined_bucket_public_access_block
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "refined-bucket-config" {
-  bucket = aws_s3_bucket.refined_bucket.id
+resource "aws_s3_bucket_lifecycle_configuration" "trusted-bucket-config" {
+  bucket = aws_s3_bucket.trusted_bucket.id
 
   rule {
     id = "lifecycle"
