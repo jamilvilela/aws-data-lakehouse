@@ -3,9 +3,9 @@ resource "aws_glue_catalog_database" "db_raw" {
   location_uri = "s3://${var.buckets.raw}"
 } 
 
-resource "aws_glue_catalog_database" "db_refined" {
-  name = var.databases.refined
-  location_uri = "s3://${var.buckets.refined}"
+resource "aws_glue_catalog_database" "db_trusted" {
+  name = var.databases.trusted
+  location_uri = "s3://${var.buckets.trusted}"
 } 
 
 resource "aws_glue_catalog_database" "db_business" {

@@ -16,17 +16,6 @@ variable "datalake_policy_name" {
   type = string  
 }
 
-############################################
-# S3 bucket variables
-# variable "buckets" {
-#   description = "S3 buckets for the data lake"
-#   type = object({
-#     workspace = string
-#     raw       = string
-#     refined   = string
-#     business  = string
-#   })
-# }
 
 variable "workspace_bucket_arn" {
   description = "ARN of the workspace S3 bucket"
@@ -38,8 +27,8 @@ variable "raw_bucket_arn" {
   type        = string
 }
 
-variable "refined_bucket_arn" {
-  description = "ARN of the refined S3 bucket"
+variable "trusted_bucket_arn" {
+  description = "ARN of the trusted S3 bucket"
   type        = string
 }
 
@@ -54,7 +43,7 @@ variable "databases" {
   description = "Glue databases for the data lake"
   type = object({
     raw      = string
-    refined  = string
+    trusted  = string
     business = string
   })
 }

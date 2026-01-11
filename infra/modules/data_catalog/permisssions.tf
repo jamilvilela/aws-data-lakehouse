@@ -9,15 +9,15 @@ resource "aws_lakeformation_permissions" "grant_dml_db_raw" {
   depends_on = [aws_glue_catalog_database.db_raw]
 }
 
-resource "aws_lakeformation_permissions" "grant_dml_db_refined" {
+resource "aws_lakeformation_permissions" "grant_dml_db_trusted" {
   permissions     = ["DESCRIBE", "SELECT", "ALTER", "INSERT", "DELETE"]
   principal       = var.datalake_role_arn
   catalog_id      = var.control_account
   table {
-    database_name = var.databases.refined
+    database_name = var.databases.trusted
     wildcard      = true
   }
-  depends_on = [aws_glue_catalog_database.db_refined]
+  depends_on = [aws_glue_catalog_database.db_trusted]
 }
 
 resource "aws_lakeformation_permissions" "grant_dml_db_business" {
@@ -44,16 +44,16 @@ resource "aws_lakeformation_permissions" "grant_select_lake_admin_raw" {
   depends_on = [aws_glue_catalog_database.db_raw]
 }
 
-resource "aws_lakeformation_permissions" "grant_select_lake_admin_refined" {
+resource "aws_lakeformation_permissions" "grant_select_lake_admin_trusted" {
   permissions     = ["DESCRIBE", "SELECT", "ALTER", "INSERT", "DELETE"]
   principal       = var.lake_admin_arn                     
   catalog_id      = var.control_account
 
   table {
-    database_name = var.databases.refined
+    database_name = var.databases.trusted
     wildcard      = true
   }
-  depends_on = [aws_glue_catalog_database.db_refined]
+  depends_on = [aws_glue_catalog_database.db_trusted]
 }
 
 resource "aws_lakeformation_permissions" "grant_select_lake_admin_business" {
