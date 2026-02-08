@@ -1,16 +1,12 @@
-# terraform plan -var-file="tfvars/terraform.tfvars" 
-# terraform apply -var-file="tfvars/terraform.tfvars" -auto-approve
-control_account = "331504768406"
-
 datalake_role_name = "role-datalake-analytics"
 datalake_policy_name = "datalake-policy"
 
 buckets = {
-  workspace = "lakehouse-workspace-331504768406"
-  landing   = "lakehouse-landing-331504768406"
-  raw       = "lakehouse-raw-331504768406"
-  trusted   = "lakehouse-trusted-331504768406"
-  business  = "lakehouse-business-331504768406"
+  workspace = "lakehouse-workspace"
+  landing   = "lakehouse-landing"
+  raw       = "lakehouse-raw"
+  trusted   = "lakehouse-trusted"
+  business  = "lakehouse-business"
 }
 
 databases = {
@@ -23,6 +19,11 @@ tables = {
   etl_control  = "etl_control"
   data_quality = "data_quality_metrics"
 }
+
+
+# CONFIGURE VIA VARIÁVEIS DE AMBIENTE!
+# ⚠️  NÃO COMMIT CREDENCIAIS REAIS AQUI
+# Use: export TF_VAR_user_lake_admin_name="seu_usuario" 
 
 users = {
   datalake_admin = {

@@ -1,6 +1,3 @@
-variable "control_account" {
-  type = string
-}
 
 ############################################
 # IAM variables
@@ -11,6 +8,10 @@ variable "datalake_role_name" {
 
 variable "datalake_policy_name" {
   type = string  
+}
+
+variable "user_lake_admin_name" {
+  type    = string
 }
 
 ############################################

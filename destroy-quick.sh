@@ -12,6 +12,20 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 
+echo -e "${BLUE}📂 Carregando variáveis de .env...${NC}"
+
+if [ ! -f .env ]; then
+    echo -e "${RED}❌ Erro: Arquivo .env não encontrado!${NC}"
+    echo "   Copie .env.example para .env e preencha com seus valores"
+    echo "   cp .env.example .env"
+    exit 1
+fi
+
+source .env
+echo -e "${GREEN}✅ Variáveis carregadas com sucesso!${NC}"
+
+export TF_VAR_user_lake_admin_name="$user_lake_admin_name"
+
 # Entrar na pasta infra e executar terraform destroy
 cd infra
 
