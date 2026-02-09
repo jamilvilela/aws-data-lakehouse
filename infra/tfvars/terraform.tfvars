@@ -1,16 +1,12 @@
-# terraform plan -var-file="tfvars/terraform.tfvars" 
-# terraform apply -var-file="tfvars/terraform.tfvars" -auto-approve
-control_account = "331504768406"
-
 datalake_role_name = "role-datalake-analytics"
 datalake_policy_name = "datalake-policy"
 
 buckets = {
-  workspace = "lakehouse-workspace-331504768406"
-  landing   = "lakehouse-landing-331504768406"
-  raw       = "lakehouse-raw-331504768406"
-  trusted   = "lakehouse-trusted-331504768406"
-  business  = "lakehouse-business-331504768406"
+  workspace = "lakehouse-workspace"
+  landing   = "lakehouse-landing"
+  raw       = "lakehouse-raw"
+  trusted   = "lakehouse-trusted"
+  business  = "lakehouse-business"
 }
 
 databases = {
@@ -24,6 +20,8 @@ tables = {
   data_quality = "data_quality_metrics"
 }
 
+# Usuários criados no IAM
+# Estes usuários serão adicionados automaticamente aos grupos correspondentes
 users = {
   datalake_admin = {
     name = "datalake-admin"
@@ -32,4 +30,3 @@ users = {
     name = "datalake-user-01"
   }
 }
-
