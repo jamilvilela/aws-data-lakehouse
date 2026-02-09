@@ -5,7 +5,9 @@ variable "control_account" {
 ############################################
 # IAM variables
 variable "lake_admin_arn" {
-  type = string  
+  type        = string
+  description = "ARN of the lake-admin user (opcional se usar role de admin)"
+  default     = ""
 }
 
 variable "datalake_role_arn" {

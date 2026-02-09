@@ -10,9 +10,10 @@ variable "datalake_policy_name" {
   type = string  
 }
 
-variable "user_lake_admin_name" {
-  type    = string
-}
+# Descontinuado: lake_admin user não é mais necessário
+# variable "user_lake_admin_name" {
+#   type    = string
+# }
 
 ############################################
 # S3 bucket variables

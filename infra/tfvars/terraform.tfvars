@@ -20,11 +20,8 @@ tables = {
   data_quality = "data_quality_metrics"
 }
 
-
-# CONFIGURE VIA VARIÁVEIS DE AMBIENTE!
-# ⚠️  NÃO COMMIT CREDENCIAIS REAIS AQUI
-# Use: export TF_VAR_user_lake_admin_name="seu_usuario" 
-
+# Usuários criados no IAM
+# Estes usuários serão adicionados automaticamente aos grupos correspondentes
 users = {
   datalake_admin = {
     name = "datalake-admin"
@@ -33,4 +30,3 @@ users = {
     name = "datalake-user-01"
   }
 }
-

@@ -35,4 +35,6 @@ terraform init
 terraform plan -var-file="tfvars/terraform.tfvars"
 terraform apply -var-file="tfvars/terraform.tfvars" -auto-approve
 
+aws iam add-user-to-group --user-name lake-admin --group-name datalake-admins
+
 echo -e "${GREEN}✓ Deploy concluído!${NC}"

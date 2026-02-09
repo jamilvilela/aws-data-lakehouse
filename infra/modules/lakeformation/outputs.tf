@@ -33,3 +33,67 @@ output "datalake_user1_arn" {
   value       = aws_iam_user.datalake_user1.arn
 }
 
+# ==============================================================================
+# Outputs para os grupos e roles do novo modelo
+# ==============================================================================
+
+output "datalake_admins_group_arn" {
+  description = "ARN of the datalake-admins IAM group"
+  value       = aws_iam_group.datalake_admins.arn
+}
+
+output "datalake_admins_group_name" {
+  description = "Name of the datalake-admins IAM group"
+  value       = aws_iam_group.datalake_admins.name
+}
+
+output "datalake_users_internal_group_arn" {
+  description = "ARN of the datalake-users-internal IAM group"
+  value       = aws_iam_group.datalake_users_internal.arn
+}
+
+output "datalake_users_internal_group_name" {
+  description = "Name of the datalake-users-internal IAM group"
+  value       = aws_iam_group.datalake_users_internal.name
+}
+
+output "datalake_users_external_group_arn" {
+  description = "ARN of the datalake-users-external IAM group"
+  value       = aws_iam_group.datalake_users_external.arn
+}
+
+output "datalake_users_external_group_name" {
+  description = "Name of the datalake-users-external IAM group"
+  value       = aws_iam_group.datalake_users_external.name
+}
+
+output "datalake_admins_lf_role_arn" {
+  description = "ARN of the datalake-admins-lf-role (for Lake Formation permissions)"
+  value       = aws_iam_role.datalake_admins_lf_role.arn
+}
+
+output "datalake_admins_lf_role_name" {
+  description = "Name of the datalake-admins-lf-role"
+  value       = aws_iam_role.datalake_admins_lf_role.name
+}
+
+output "datalake_users_internal_lf_role_arn" {
+  description = "ARN of the datalake-users-internal-lf-role (for Lake Formation permissions)"
+  value       = aws_iam_role.datalake_users_internal_lf_role.arn
+}
+
+output "datalake_users_internal_lf_role_name" {
+  description = "Name of the datalake-users-internal-lf-role"
+  value       = aws_iam_role.datalake_users_internal_lf_role.name
+}
+
+output "datalake_users_external_lf_role_arn" {
+  description = "ARN of the datalake-users-external-lf-role (for Lake Formation permissions)"
+  value       = aws_iam_role.datalake_users_external_lf_role.arn
+}
+
+output "datalake_users_external_lf_role_name" {
+  description = "Name of the datalake-users-external-lf-role"
+  value       = aws_iam_role.datalake_users_external_lf_role.name
+}
+

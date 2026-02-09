@@ -22,21 +22,21 @@ module "lakeformation" {
   raw_bucket_arn         = module.s3.raw_bucket_arn
   trusted_bucket_arn     = module.s3.trusted_bucket_arn
   business_bucket_arn    = module.s3.business_bucket_arn
-  # lake_admin_arn         = "arn:aws:iam::331504768406:user/lake-admin"
-  lake_admin_arn         = data.aws_iam_user.lake_admin.arn
+  # lake_admin_arn não é mais necessário; usar grupo datalake-admins
 
   depends_on = [module.iam, module.s3]
 }
 
 module "aws_data_catalog" {
-  source                 = "./modules/data_catalog"
-  control_account        = data.aws_caller_identity.current.account_id
-  datalake_role_arn      = module.iam.datalake_role_arn
-  buckets                = var.buckets
-  databases              = var.databases
-  tables                 = var.tables
-  # lake_admin_arn         = "arn:aws:iam::331504768406:user/lake-admin"
-  lake_admin_arn         = data.aws_iam_user.lake_admin.arn
+  source                                 = "./modules/data_catalog"
+  control_account                        = data.aws_caller_identity.current.account_id
+  datalake_role_arn                      = module.iam.datalake_role_arn
+  buckets                                = local.buckets
+  databases                              = var.databases
+  tables                                 = var.tables
+  datalake_admins_principal_arn          = module.lakeformation.datalake_admins_lf_role_arn
+  datalake_users_internal_principal_arn  = module.lakeformation.datalake_users_internal_lf_role_arn
+  datalake_users_external_principal_arn  = module.lakeformation.datalake_users_external_lf_role_arn
 
   depends_on = [module.iam, module.lakeformation, module.s3]
 }
