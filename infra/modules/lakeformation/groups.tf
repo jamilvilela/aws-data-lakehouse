@@ -209,7 +209,24 @@ resource "aws_iam_group_policy" "datalake_users_external_basic" {
   })
 }
 
-resource "aws_iam_group_policy_attachment" "datalake_users_external_athena" {
-  group      = aws_iam_group.datalake_users_external.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonAthenaReadOnlyAccess"
+resource "aws_iam_group_policy" "datalake_users_external_athena_readonly" {
+  name   = "DatalakeExternalUserAthenaReadOnly"
+  group  = aws_iam_group.datalake_users_external.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "athena:GetQueryExecution",
+          "athena:GetQueryResults",
+          "athena:StartQueryExecution",
+          "athena:StopQueryExecution",
+          "athena:GetWorkGroup",
+          "athena:GetQueryResultsStream"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }

@@ -18,10 +18,12 @@ resource "aws_iam_user_login_profile" "datalake_admin" {
 }
 
 # Adicionar o usuário ao grupo datalake-admins
-# As policies vêm do grupo; não adicionar policies diretas ao usuário
 resource "aws_iam_group_membership" "datalake_admin_membership" {
   name       = "datalake-admin-group-membership"
-  users      = [aws_iam_user.datalake_admin.name]
+  users      = [
+    aws_iam_user.datalake_admin.name, 
+    var.lake_admin_name
+  ]
   group      = aws_iam_group.datalake_admins.name
   depends_on = [aws_iam_group.datalake_admins]
 }

@@ -16,13 +16,13 @@ module "lakeformation" {
   users                  = var.users
   databases              = var.databases
   tables                 = var.tables
-  datalake_role_arn      = module.iam.datalake_role_arn
-  datalake_policy_name   = var.datalake_policy_name
   workspace_bucket_arn   = module.s3.workspace_bucket_arn
   raw_bucket_arn         = module.s3.raw_bucket_arn
   trusted_bucket_arn     = module.s3.trusted_bucket_arn
   business_bucket_arn    = module.s3.business_bucket_arn
-  # lake_admin_arn não é mais necessário; usar grupo datalake-admins
+  datalake_role_arn    = module.iam.datalake_role_arn
+  datalake_policy_name = module.iam.datalake_policy_name
+  lake_admin_name        = var.user_lake_admin_name
 
   depends_on = [module.iam, module.s3]
 }

@@ -4,20 +4,21 @@ variable "control_account" {
 
 ############################################
 # IAM variables
-variable "lake_admin_arn" {
+variable "lake_admin_name" {
   type        = string
   description = "ARN of the lake-admin user (opcional se usar role de admin)"
   default     = ""
 }
-
+# infra/modules/lakeformation/variables.tf
 variable "datalake_role_arn" {
-  type = string
+  type        = string
+  description = "ARN of the datalake analytics IAM role"
 }
 
 variable "datalake_policy_name" {
-  type = string  
+  type        = string
+  description = "Name of the datalake analytics IAM policy"
 }
-
 
 variable "workspace_bucket_arn" {
   description = "ARN of the workspace S3 bucket"
