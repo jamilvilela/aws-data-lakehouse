@@ -5,7 +5,7 @@
 # Terraform files
 .terraform/
 .terraform.lock.hcl
-# *.tfstate
+*.tfstate
 *.tfstate.*
 *.backup
 LICENSE.txt

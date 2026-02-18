@@ -20,8 +20,8 @@ module "lakeformation" {
   raw_bucket_arn         = module.s3.raw_bucket_arn
   trusted_bucket_arn     = module.s3.trusted_bucket_arn
   business_bucket_arn    = module.s3.business_bucket_arn
-  datalake_role_arn    = module.iam.datalake_role_arn
-  datalake_policy_name = module.iam.datalake_policy_name
+  datalake_role_arn      = module.iam.datalake_role_arn
+  datalake_policy_arn    = module.iam.datalake_policy_arn
   lake_admin_name        = var.user_lake_admin_name
 
   depends_on = [module.iam, module.s3]

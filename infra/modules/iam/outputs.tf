@@ -7,3 +7,8 @@ output "datalake_policy_name" {
   description = "Name of the Data Lake policy"
   value       = aws_iam_policy.datalake_policy.name
 }
+
+output "datalake_policy_arn" {
+  description = "ARN of the Data Lake policy"
+  value       = aws_iam_policy.datalake_policy.arn
+}
