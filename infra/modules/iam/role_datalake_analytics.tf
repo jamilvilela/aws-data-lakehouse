@@ -13,7 +13,8 @@ resource "aws_iam_role" "datalake_role" {
             "athena.amazonaws.com",
             "s3.amazonaws.com",
             "sns.amazonaws.com",
-            "sqs.amazonaws.com"
+            "sqs.amazonaws.com",
+            "firehose.amazonaws.com"
           ]
         }
         Action = "sts:AssumeRole"
@@ -33,11 +34,14 @@ resource "aws_iam_policy" "datalake_policy" {
         Effect = "Allow"
         Action = [
           "s3:ListBucket",
+          "s3:GetBucketLocation",
           "s3:GetObject",
           "s3:PutObject",
+          "s3:PutObjectAcl",
           "s3:DeleteObject"
         ]
         Resource = [
+          "arn:aws:s3:::lakehouse-landing-*",
           "arn:aws:s3:::lakehouse-raw-*",
           "arn:aws:s3:::lakehouse-refined-*",
           "arn:aws:s3:::lakehouse-business-*"
@@ -106,9 +110,3 @@ resource "aws_iam_policy" "datalake_policy" {
     ]
   })
 }
-
-resource "aws_iam_role_policy_attachment" "datalake_policy_attachment" {
-  role       = aws_iam_role.datalake_role.name
-  policy_arn = aws_iam_policy.datalake_policy.arn
-}
-

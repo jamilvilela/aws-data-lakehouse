@@ -10,7 +10,7 @@
 ################################################################################
 
 # ==============================================================================
-# Role para administradores do Data Lake
+# Role para administradores do Data Lake 
 # ==============================================================================
 
 resource "aws_iam_role" "datalake_admins_lf_role" {
@@ -81,11 +81,12 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           "iam:DeletePolicy",
           "iam:CreatePolicyVersion",
           "iam:DeletePolicyVersion",
-          "iam:ListPolicyVersions"
+          "iam:ListPolicyVersions",
+          "iam:UpdateAssumeRolePolicy"
         ]
         Resource = [
           var.datalake_role_arn,
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.datalake_policy_name}"
+          var.datalake_policy_arn
         ]
       },
       # (3) IAM para GRUPOS do datalake 
@@ -175,6 +176,26 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           aws_iam_policy.lf_ram_access_policy.arn,
           aws_iam_policy.lf_governed_table_policy.arn
         ]
+      },
+      # (8) 🔹 Permissões para consultar a service-linked role do Lake Formation      
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:GetRole",
+          "iam:GetRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:ListAttachedRolePolicies",
+          "iam:ListRolePolicies",
+          "iam:PutRolePolicy",
+          "iam:DeleteRolePolicy",
+          "iam:GetRole",
+          "iam:UpdateAssumeRolePolicy",
+          "iam:CreateServiceLinkedRole",
+          "iam:PassRole"
+        ]
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
       }
     ]
   })

@@ -72,9 +72,9 @@ echo -e "${YELLOW}Executando: terraform ${NC}"
 
 cd infra
 terraform init 
-
-terraform plan -var-file="tfvars/terraform.tfvars"
-terraform apply -var-file="tfvars/terraform.tfvars" -auto-approve
+terraform validate
+terraform plan -var-file="tfvars/terraform.tfvars" 
+terraform apply -var-file="tfvars/terraform.tfvars" -auto-approve  
 
 # Step Validate
 echo ""

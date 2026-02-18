@@ -15,9 +15,9 @@ variable "datalake_role_arn" {
   description = "ARN of the datalake analytics IAM role"
 }
 
-variable "datalake_policy_name" {
+variable "datalake_policy_arn" {
   type        = string
-  description = "Name of the datalake analytics IAM policy"
+  description = "ARN of the datalake analytics IAM policy"
 }
 
 variable "workspace_bucket_arn" {
