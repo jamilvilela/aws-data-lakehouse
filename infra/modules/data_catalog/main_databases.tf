@@ -1,3 +1,8 @@
+resource "aws_glue_catalog_database" "db_landing" {
+  name = var.databases.landing
+  location_uri = "s3://${var.buckets.landing}"
+} 
+
 resource "aws_glue_catalog_database" "db_raw" {
   name = var.databases.raw
   location_uri = "s3://${var.buckets.raw}"

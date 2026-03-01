@@ -10,6 +10,7 @@ buckets = {
 }
 
 databases = {
+  landing  = "db_landing"
   raw      = "db_raw"
   trusted  = "db_trusted"
   business = "db_business"
