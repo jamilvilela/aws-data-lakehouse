@@ -12,6 +12,16 @@
 # ==============================================================================
 
 # Admins - todos databases
+resource "aws_lakeformation_permissions" "grant_admins_database_landing" {
+  permissions     = ["DESCRIBE"]
+  principal       = var.datalake_admins_principal_arn
+  catalog_id      = var.control_account
+  database {
+    name = var.databases.landing
+  }
+  depends_on = [aws_glue_catalog_database.db_landing]
+}
+
 resource "aws_lakeformation_permissions" "grant_admins_database_raw" {
   permissions     = ["DESCRIBE"]
   principal       = var.datalake_admins_principal_arn
@@ -43,6 +53,16 @@ resource "aws_lakeformation_permissions" "grant_admins_database_business" {
 }
 
 # Internal users - todos databases (leitura)
+resource "aws_lakeformation_permissions" "grant_internal_users_database_landing" {
+  permissions     = ["DESCRIBE"]
+  principal       = var.datalake_users_internal_principal_arn
+  catalog_id      = var.control_account
+  database {
+    name = var.databases.landing
+  }
+  depends_on = [aws_glue_catalog_database.db_landing]
+}
+
 resource "aws_lakeformation_permissions" "grant_internal_users_database_raw" {
   permissions     = ["DESCRIBE"]
   principal       = var.datalake_users_internal_principal_arn
@@ -89,6 +109,17 @@ resource "aws_lakeformation_permissions" "grant_external_users_database_business
 # ==============================================================================
 
 # Service role (Glue, EMR) - DML operations
+resource "aws_lakeformation_permissions" "grant_dml_db_landing" {
+  permissions     = ["DESCRIBE", "SELECT", "ALTER", "INSERT", "DELETE"]
+  principal       = var.datalake_role_arn
+  catalog_id      = var.control_account
+  table {
+    database_name = var.databases.landing
+    wildcard      = true
+  }
+  depends_on = [aws_glue_catalog_database.db_landing]
+}
+
 resource "aws_lakeformation_permissions" "grant_dml_db_raw" {
   permissions     = ["DESCRIBE", "SELECT", "ALTER", "INSERT", "DELETE"]
   principal       = var.datalake_role_arn
@@ -123,6 +154,17 @@ resource "aws_lakeformation_permissions" "grant_dml_db_business" {
 }
 
 # Admins - todas as tabelas em todos databases
+resource "aws_lakeformation_permissions" "grant_admins_table_landing" {
+  permissions     = ["DESCRIBE", "SELECT", "ALTER", "INSERT", "DELETE"]
+  principal       = var.datalake_admins_principal_arn
+  catalog_id      = var.control_account
+  table {
+    database_name = var.databases.landing
+    wildcard      = true
+  }
+  depends_on = [aws_glue_catalog_database.db_landing]
+}
+
 resource "aws_lakeformation_permissions" "grant_admins_table_raw" {
   permissions     = ["DESCRIBE", "SELECT", "ALTER", "INSERT", "DELETE"]
   principal       = var.datalake_admins_principal_arn
@@ -157,6 +199,17 @@ resource "aws_lakeformation_permissions" "grant_admins_table_business" {
 }
 
 # Internal users - leitura em todas as tabelas
+resource "aws_lakeformation_permissions" "grant_internal_users_table_landing" {
+  permissions     = ["DESCRIBE", "SELECT"]
+  principal       = var.datalake_users_internal_principal_arn
+  catalog_id      = var.control_account
+  table {
+    database_name = var.databases.landing
+    wildcard      = true
+  }
+  depends_on = [aws_glue_catalog_database.db_landing]
+}
+
 resource "aws_lakeformation_permissions" "grant_internal_users_table_raw" {
   permissions     = ["DESCRIBE", "SELECT"]
   principal       = var.datalake_users_internal_principal_arn

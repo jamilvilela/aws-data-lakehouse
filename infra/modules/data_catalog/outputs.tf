@@ -15,5 +15,5 @@ output "aws_glue_catalog_database_business_name" {
 
 output "aws_glue_catalog_table_dataquality_metrics_name" {
   description = "Name of the data quality metrics table"
-  value       = aws_glue_catalog_table.dataquality_metrics.name  
+  value       = aws_glue_catalog_table.dataquality_metrics.name
 }

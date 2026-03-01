@@ -1,4 +1,4 @@
-resource "aws_glue_catalog_table" "dataquality_metrics" {
+resource "aws_glue_catalog_table" "dataquality_metrics" { 
   depends_on    = [aws_glue_catalog_database.db_raw]
   name          = var.tables.data_quality
   database_name = var.databases.raw
