@@ -19,6 +19,7 @@ databases = {
 tables = {
   etl_control  = "etl_control"
   data_quality = "data_quality_metrics"
+  tbl_opensky_flights = "opensky_flights"
 }
 
 # Usuários criados no IAM
