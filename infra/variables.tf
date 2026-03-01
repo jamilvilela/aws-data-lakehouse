@@ -42,10 +42,7 @@ variable "databases" {
 
 variable "tables" {
   description = "Glue tables for the data lake"
-  type = object({
-    etl_control  = string
-    data_quality = string
-  })
+  type = map(string)
 }
 
 ##############################################
