@@ -187,10 +187,11 @@ Create and manage AWS Glue Catalog databases and tables for metadata management,
 
 #### Tables
 
-**T-001: `opensky_flights`** (Landing Zone)
+**T-001: `opensky_flights`** (Raw Database)
 - Format: Parquet (Snappy compressed)
 - Partition: `event_date` (date)
-- Location: `s3://{landing}/opensky/flights/`
+- Location: `s3://{raw}/tables/opensky_flights/`
+- Database: `db_raw`
 - Columns: `icao24`, `callsign`, `origin_country`, `latitude`, `longitude`, `altitude`, `velocity`, `heading`, `last_contact`, `event_time`, `location`
 
 **T-002: `etl_execution_control`** (Raw Zone)

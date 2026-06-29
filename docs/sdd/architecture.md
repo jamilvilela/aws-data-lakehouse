@@ -230,7 +230,15 @@ graph TD
 
 ### Database: `db_landing`
 
+*(No tables currently — reserved for future landing zone tables)*
+
+### Database: `db_raw`
+
 **Table: `opensky_flights`**
+- **S3 Location:** `s3://{raw}/tables/opensky_flights/`
+- **Format:** Parquet (Snappy compressed)
+- **Partition:** `event_date` (date)
+
 | Column | Type | Description |
 |---|---|---|
 | `icao24` | `string` | Transponder identifier |
@@ -246,8 +254,6 @@ graph TD
 | `location` | `string` | Location description |
 | **Partition** | | |
 | `event_date` | `date` | Flight date |
-
-### Database: `db_raw`
 
 **Table: `etl_execution_control`**
 | Column | Type | Description |

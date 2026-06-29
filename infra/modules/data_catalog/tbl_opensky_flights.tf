@@ -1,6 +1,6 @@
 resource "aws_glue_catalog_table" "tbl_opensky_flights" {
     name          = var.tables.tbl_opensky_flights
-    database_name = var.databases.landing
+    database_name = var.databases.raw
 
     table_type = "EXTERNAL_TABLE"
 
@@ -15,7 +15,7 @@ resource "aws_glue_catalog_table" "tbl_opensky_flights" {
     }
 
     storage_descriptor {
-        location      = "s3://${var.buckets.landing}/opensky/flights/"
+        location      = "s3://${var.buckets.raw}/tables/opensky_flights/"
         input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
         output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
 
