@@ -120,6 +120,18 @@ else
     done
 fi
 
+echo ""
+echo "Checando tabelas no database db_raw..."
+TABLES=$(aws glue get-tables --database-name db_raw --query 'TableList[].Name' --output text)
+if [ -z "$TABLES" ]; then
+    echo "❌ Tabelas não encontradas em db_raw (ou sem permissão para glue:GetTables)"
+else
+    echo "✅ Tabelas encontradas em db_raw:"
+    for tbl in $TABLES; do
+        echo "   - $tbl"
+    done
+fi
+
 # (opcional) religar set -e se tiver mais coisa depois
 set -e
 
