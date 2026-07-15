@@ -4,7 +4,7 @@ variable "control_account" {
 }
 
 variable "datalake_role_arn" {
-  type = string
+  type        = string
   description = "ARN of the datalake service role (Glue, EMR, etc)"
 }
 
@@ -54,7 +54,7 @@ variable "databases" {
 
 variable "tables" {
   description = "Glue tables for the data lake"
-  type = map(string)  
+  type        = map(string)
 }
 
 
