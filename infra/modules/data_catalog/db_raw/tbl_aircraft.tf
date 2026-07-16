@@ -8,27 +8,23 @@ resource "aws_glue_catalog_table" "tbl_aircraft" {
   name          = var.tables.tbl_aircraft
   database_name = var.databases.raw
 
-  table_type = "EXTERNAL_TABLE"
+  table_type = local.table_type
 
-  parameters = {
-    classification  = "delta"
-    table_type      = "delta"
-    compressionType = "snappy"
-  }
+  parameters = local.delta_parameters
 
   partition_keys {
-    name = "event_date"
-    type = "date"
+    name = local.delta_partition_key.name
+    type = local.delta_partition_key.type
   }
 
   storage_descriptor {
     location      = "s3://${var.buckets.raw}/tables/tbl_aircraft/"
-    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
-    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+    input_format  = local.input_format
+    output_format = local.output_format
 
     ser_de_info {
-      name                  = "DeltaLakeSerDe"
-      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+      name                  = local.delta_ser_de.name
+      serialization_library = local.delta_ser_de.serialization_library
     }
 
     columns {

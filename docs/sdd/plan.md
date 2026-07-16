@@ -90,7 +90,7 @@
 
 | Step | Module | Description | Status |
 |---|---|---|---|
-| 4.1 | Catalog | Create Glue databases (landing, raw, trusted, business) | ✅ Complete |
+| 4.1 | Catalog | Create Glue databases (raw, trusted, business) | ✅ Complete |
 | 4.2 | Catalog | Create `opensky_flights` table (landing, parquet) | ✅ Complete |
 | 4.3 | Catalog | Create `etl_execution_control` table (raw, parquet) | ✅ Complete |
 | 4.4 | Catalog | Create `data_quality_metrics` table (raw, parquet) | ✅ Complete |
@@ -193,7 +193,7 @@ graph TB
 |---|---|
 | Terraform modules | 4 (s3, iam, lakeformation, data_catalog) |
 | S3 buckets | 5 (workspace, landing, raw, trusted, business) |
-| Glue databases | 4 (landing, raw, trusted, business) |
+| Glue databases | 3 (raw, trusted, business) |
 | Glue tables | 3 (opensky_flights, etl_control, data_quality) |
 | IAM roles | 5 (1 analytics + 3 LF + 1 workflow) |
 | IAM groups | 3 (admins, internal, external) |
