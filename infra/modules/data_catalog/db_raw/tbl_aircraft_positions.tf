@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# tbl_aircraft_positions — Aircraft positions (high volume, streaming)
+# tbl_aircraft_positions — Bronze: Aircraft positions (high volume, streaming CDC)
 # Source: DMS CDC from flight_radar.aircraft_positions (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: position_id, recorded_at
+# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
+# PK natural source: position_id, recorded_at (PARTITION BY RANGE no source)
 # ------------------------------------------------------------------------------
 resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
   name          = var.tables.tbl_aircraft_positions
@@ -15,6 +15,11 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
   partition_keys {
     name = local.delta_partition_key.name
     type = local.delta_partition_key.type
+  }
+  partition_keys {
+    name = "hour"
+    type = "int"
+    comment = "Hour extracted from recorded_at (0-23) — partition pruning para consultas sub-diárias"
   }
 
   storage_descriptor {
@@ -88,14 +93,14 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
       comment = "Ingestion timestamp"
     }
     columns {
-      name    = "dms_operation"
+      name    = "cdc_operation"
       type    = "string"
-      comment = "DMS CDC operation (I/U/D)"
+      comment = "CDC operation type (I/U/D)"
     }
     columns {
-      name    = "dms_timestamp"
+      name    = "cdc_timestamp"
       type    = "timestamp"
-      comment = "DMS capture timestamp"
+      comment = "CDC capture timestamp"
     }
     columns {
       name    = "cod_unico"

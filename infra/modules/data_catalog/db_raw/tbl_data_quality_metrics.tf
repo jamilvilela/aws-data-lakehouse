@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
-# data_quality_metrics — Data quality metrics table
-# Source: Written by QualityMetrics class (Parquet append)
+# data_quality_metrics — Bronze: Data quality metrics table
+# Source: Written by QualityMetrics class (Parquet append by Glue ETL)
 # Format: Parquet
 # Partition: reference_date
 # ------------------------------------------------------------------------------
@@ -71,11 +71,6 @@ resource "aws_glue_catalog_table" "data_quality_metrics" {
       name    = "technology"
       type    = "string"
       comment = "Technology (e.g. glue)"
-    }
-    columns {
-      name    = "reference_date"
-      type    = "date"
-      comment = "Partition date"
     }
   }
 }

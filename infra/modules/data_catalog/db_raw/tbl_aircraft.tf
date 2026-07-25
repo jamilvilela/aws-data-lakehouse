@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# tbl_aircraft — Aircraft registry
+# tbl_aircraft — Bronze: Aircraft registry
 # Source: DMS CDC from flight_radar.aircraft (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: icao24
+# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
+# PK natural source: icao24
 # ------------------------------------------------------------------------------
 resource "aws_glue_catalog_table" "tbl_aircraft" {
   name          = var.tables.tbl_aircraft
@@ -71,6 +71,16 @@ resource "aws_glue_catalog_table" "tbl_aircraft" {
       name    = "updated_at"
       type    = "timestamp"
       comment = "Record last update timestamp"
+    }
+    columns {
+      name    = "cdc_operation"
+      type    = "string"
+      comment = "CDC operation type (I/U/D)"
+    }
+    columns {
+      name    = "cdc_timestamp"
+      type    = "timestamp"
+      comment = "CDC capture timestamp"
     }
     columns {
       name    = "cod_unico"

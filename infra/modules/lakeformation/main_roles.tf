@@ -196,6 +196,235 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           "iam:PassRole"
         ]
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
+      },
+      # (9) 🔹 SQS — gerenciar filas
+      {
+        Effect = "Allow"
+        Action = [
+          "sqs:ListQueues",
+          "sqs:GetQueueAttributes",
+          "sqs:GetQueueUrl",
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:CreateQueue",
+          "sqs:DeleteQueue",
+          "sqs:SetQueueAttributes",
+          "sqs:TagQueue",
+          "sqs:ListQueueTags"
+        ]
+        Resource = "*"
+      },
+      # (10) 🔹 SNS — gerenciar tópicos e assinaturas
+      {
+        Effect = "Allow"
+        Action = [
+          "sns:ListTopics",
+          "sns:ListSubscriptions",
+          "sns:GetTopicAttributes",
+          "sns:Publish",
+          "sns:Subscribe",
+          "sns:Unsubscribe",
+          "sns:CreateTopic",
+          "sns:DeleteTopic",
+          "sns:SetTopicAttributes",
+          "sns:TagResource",
+          "sns:ListTagsForResource"
+        ]
+        Resource = "*"
+      },
+      # (11) 🔹 Athena — executar e visualizar consultas
+      {
+        Effect = "Allow"
+        Action = [
+          "athena:StartQueryExecution",
+          "athena:StopQueryExecution",
+          "athena:GetQueryExecution",
+          "athena:GetQueryResults",
+          "athena:ListWorkGroups",
+          "athena:GetWorkGroup",
+          "athena:ListDataCatalogs",
+          "athena:GetDataCatalog",
+          "athena:ListDatabases",
+          "athena:ListTableMetadata",
+          "athena:GetTableMetadata",
+          "athena:GetNamedQuery",
+          "athena:ListNamedQueries",
+          "athena:CreateNamedQuery",
+          "athena:DeleteNamedQuery"
+        ]
+        Resource = "*"
+      },
+      # (12) 🔹 Kinesis Data Streams — consultar streams
+      {
+        Effect = "Allow"
+        Action = [
+          "kinesis:ListStreams",
+          "kinesis:DescribeStream",
+          "kinesis:DescribeStreamSummary",
+          "kinesis:GetShardIterator",
+          "kinesis:GetRecords",
+          "kinesis:PutRecord",
+          "kinesis:ListShards",
+          "kinesis:ListTagsForStream",
+          "kinesis:CreateStream",
+          "kinesis:DeleteStream",
+          "kinesis:UpdateShardCount",
+          "kinesis:RegisterStreamConsumer",
+          "kinesis:DeregisterStreamConsumer",
+          "kinesis:ListStreamConsumers",
+          "kinesis:DescribeStreamConsumer"
+        ]
+        Resource = "*"
+      },
+      # (13) 🔹 Firehose — gerenciar delivery streams
+      {
+        Effect = "Allow"
+        Action = [
+          "firehose:ListDeliveryStreams",
+          "firehose:DescribeDeliveryStream",
+          "firehose:CreateDeliveryStream",
+          "firehose:DeleteDeliveryStream",
+          "firehose:UpdateDestination",
+          "firehose:PutRecord",
+          "firehose:PutRecordBatch",
+          "firehose:ListTagsForDeliveryStream",
+          "firehose:TagDeliveryStream"
+        ]
+        Resource = "*"
+      },
+      # (14) 🔹 Managed Service for Apache Flink (ex-Kinesis Analytics / Flink)
+      {
+        Effect = "Allow"
+        Action = [
+          "kinesisanalytics:ListApplications",
+          "kinesisanalytics:DescribeApplication",
+          "kinesisanalytics:CreateApplication",
+          "kinesisanalytics:DeleteApplication",
+          "kinesisanalytics:UpdateApplication",
+          "kinesisanalytics:StartApplication",
+          "kinesisanalytics:StopApplication",
+          "kinesisanalytics:ListTagsForResource",
+          "kinesisanalytics:TagResource",
+          "kinesisanalytics:AddApplicationInput",
+          "kinesisanalytics:AddApplicationOutput",
+          "kinesisanalytics:AddApplicationReferenceDataSource",
+          "kinesisanalyticsv2:ListApplications",
+          "kinesisanalyticsv2:DescribeApplication",
+          "kinesisanalyticsv2:CreateApplication",
+          "kinesisanalyticsv2:DeleteApplication",
+          "kinesisanalyticsv2:UpdateApplication",
+          "kinesisanalyticsv2:StartApplication",
+          "kinesisanalyticsv2:StopApplication",
+          "kinesisanalyticsv2:ListTagsForResource",
+          "kinesisanalyticsv2:TagResource"
+        ]
+        Resource = "*"
+      },
+      # (15) 🔹 RDS / Aurora — administrar (inclui global clusters)
+      {
+        Effect = "Allow"
+        Action = [
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBClusters",
+          "rds:DescribeGlobalClusters",
+          "rds:ListTagsForResource",
+          "rds:CreateDBInstance",
+          "rds:DeleteDBInstance",
+          "rds:ModifyDBInstance",
+          "rds:RebootDBInstance",
+          "rds:CreateDBCluster",
+          "rds:DeleteDBCluster",
+          "rds:ModifyDBCluster",
+          "rds:FailoverDBCluster",
+          "rds:StartDBCluster",
+          "rds:StopDBCluster",
+          "rds:DescribeDBSubnetGroups",
+          "rds:DescribeDBParameterGroups",
+          "rds:DescribeDBClusterParameters",
+          "rds:ModifyDBClusterParameterGroup",
+          "rds:ResetDBClusterParameterGroup",
+          "rds:CreateDBClusterParameterGroup",
+          "rds:DeleteDBClusterParameterGroup",
+          "rds:CreateDBSubnetGroup",
+          "rds:DeleteDBSubnetGroup",
+          "rds:ModifyDBSubnetGroup",
+          "rds:DescribeDBClusterSnapshots",
+          "rds:CreateDBClusterSnapshot",
+          "rds:DeleteDBClusterSnapshot",
+          "rds:RestoreDBClusterFromSnapshot",
+          "rds:DescribeEventSubscriptions",
+          "rds:CreateEventSubscription",
+          "rds:DeleteEventSubscription",
+          "rds:DescribePendingMaintenanceActions",
+          "rds:DescribeDBClusterEndpoints",
+          "rds:CreateDBClusterEndpoint",
+          "rds:DeleteDBClusterEndpoint",
+          "rds:ModifyDBClusterEndpoint"
+        ]
+        Resource = "*"
+      },
+      # (16) 🔹 AWS Batch — ver e executar jobs
+      {
+        Effect = "Allow"
+        Action = [
+          "batch:DescribeComputeEnvironments",
+          "batch:DescribeJobDefinitions",
+          "batch:DescribeJobQueues",
+          "batch:DescribeJobs",
+          "batch:ListJobs",
+          "batch:SubmitJob",
+          "batch:TerminateJob",
+          "batch:CancelJob",
+          "batch:CreateComputeEnvironment",
+          "batch:DeleteComputeEnvironment",
+          "batch:UpdateComputeEnvironment",
+          "batch:CreateJobQueue",
+          "batch:DeleteJobQueue",
+          "batch:UpdateJobQueue",
+          "batch:RegisterJobDefinition",
+          "batch:DeregisterJobDefinition",
+          "batch:ListTagsForResource",
+          "batch:TagResource"
+        ]
+        Resource = "*"
+      },
+      # (17) 🔹 CloudWatch — métricas, dashboards, alarmes e logs
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:ListMetrics",
+          "cloudwatch:GetMetricData",
+          "cloudwatch:GetMetricStatistics",
+          "cloudwatch:DescribeAlarms",
+          "cloudwatch:DescribeAlarmsForMetric",
+          "cloudwatch:PutMetricAlarm",
+          "cloudwatch:DeleteAlarms",
+          "cloudwatch:SetAlarmState",
+          "cloudwatch:DescribeAlarmHistory",
+          "cloudwatch:ListDashboards",
+          "cloudwatch:GetDashboard",
+          "cloudwatch:PutDashboard",
+          "cloudwatch:DeleteDashboards",
+          "cloudwatch:ListTagsForResource",
+          "cloudwatch:TagResource",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "logs:GetLogEvents",
+          "logs:FilterLogEvents",
+          "logs:StartQuery",
+          "logs:StopQuery",
+          "logs:GetQueryResults",
+          "logs:DescribeMetricFilters",
+          "logs:PutMetricFilter",
+          "logs:DeleteMetricFilter",
+          "logs:CreateLogGroup",
+          "logs:DeleteLogGroup",
+          "logs:PutRetentionPolicy",
+          "logs:ListTagsLogGroup",
+          "logs:TagLogGroup"
+        ]
+        Resource = "*"
       }
     ]
   })

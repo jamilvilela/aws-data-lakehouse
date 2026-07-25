@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Local variables for common Glue Catalog Table configurations
-# These values are shared across all tables in the raw database to reduce
-# duplication and centralize changes.
+# These values are shared across all tables in the raw database (bronze layer)
+# to reduce duplication and centralize changes.
 # ------------------------------------------------------------------------------
 
 locals {

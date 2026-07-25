@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# tbl_aircraft_types — Aircraft type catalog (models)
+# tbl_aircraft_types — Bronze: Aircraft type catalog (models)
 # Source: DMS CDC from flight_radar.aircraft_types (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: icao_code
+# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
+# PK natural source: icao_code
 # ------------------------------------------------------------------------------
 resource "aws_glue_catalog_table" "tbl_aircraft_types" {
   name          = var.tables.tbl_aircraft_types
@@ -45,7 +45,17 @@ resource "aws_glue_catalog_table" "tbl_aircraft_types" {
     columns {
       name    = "manufacturer"
       type    = "string"
-      comment = "Manufacturer name"
+      comment = "Manufacturer name (generated in source via CASE expression)"
+    }
+    columns {
+      name    = "cdc_operation"
+      type    = "string"
+      comment = "CDC operation type (I/U/D)"
+    }
+    columns {
+      name    = "cdc_timestamp"
+      type    = "timestamp"
+      comment = "CDC capture timestamp"
     }
     columns {
       name    = "cod_unico"

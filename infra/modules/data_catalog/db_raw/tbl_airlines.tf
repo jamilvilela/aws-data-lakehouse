@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# tbl_airlines — Airlines reference
+# tbl_airlines — Bronze: Airlines reference
 # Source: DMS CDC from flight_radar.airlines (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: icao_code (natural key)
+# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
+# PK natural source: icao_code
 # ------------------------------------------------------------------------------
 resource "aws_glue_catalog_table" "tbl_airlines" {
   name          = var.tables.tbl_airlines
@@ -71,6 +71,16 @@ resource "aws_glue_catalog_table" "tbl_airlines" {
       name    = "created_at"
       type    = "timestamp"
       comment = "Record creation timestamp"
+    }
+    columns {
+      name    = "cdc_operation"
+      type    = "string"
+      comment = "CDC operation type (I/U/D)"
+    }
+    columns {
+      name    = "cdc_timestamp"
+      type    = "timestamp"
+      comment = "CDC capture timestamp"
     }
     columns {
       name    = "cod_unico"

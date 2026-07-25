@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# tbl_countries — Countries reference table
+# tbl_countries — Bronze: Countries reference table
 # Source: DMS CDC from flight_radar.countries (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: id
+# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
+# PK natural source: id
 # ------------------------------------------------------------------------------
 resource "aws_glue_catalog_table" "tbl_countries" {
   name          = var.tables.tbl_countries
@@ -51,6 +51,16 @@ resource "aws_glue_catalog_table" "tbl_countries" {
       name    = "wikipedia_link"
       type    = "string"
       comment = "Wikipedia page URL"
+    }
+    columns {
+      name    = "cdc_operation"
+      type    = "string"
+      comment = "CDC operation type (I/U/D)"
+    }
+    columns {
+      name    = "cdc_timestamp"
+      type    = "timestamp"
+      comment = "CDC capture timestamp"
     }
     columns {
       name    = "cod_unico"

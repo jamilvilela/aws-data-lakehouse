@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# tbl_flights — Flights fact table
+# tbl_flights — Bronze: Flights fact table
 # Source: DMS CDC from flight_radar.flights (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: flight_id
+# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
+# PK natural source: flight_id
 # ------------------------------------------------------------------------------
 resource "aws_glue_catalog_table" "tbl_flights" {
   name          = var.tables.tbl_flights
@@ -91,6 +91,16 @@ resource "aws_glue_catalog_table" "tbl_flights" {
       name    = "updated_at"
       type    = "timestamp"
       comment = "Record last update timestamp"
+    }
+    columns {
+      name    = "cdc_operation"
+      type    = "string"
+      comment = "CDC operation type (I/U/D)"
+    }
+    columns {
+      name    = "cdc_timestamp"
+      type    = "timestamp"
+      comment = "CDC capture timestamp"
     }
     columns {
       name    = "cod_unico"

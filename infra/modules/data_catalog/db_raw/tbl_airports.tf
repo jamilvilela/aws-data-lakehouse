@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# tbl_airports — Airports reference
+# tbl_airports — Bronze: Airports reference
 # Source: DMS CDC from flight_radar.airports (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: icao_code (natural key)
+# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
+# PK natural source: icao_code
 # ------------------------------------------------------------------------------
 resource "aws_glue_catalog_table" "tbl_airports" {
   name          = var.tables.tbl_airports
@@ -116,6 +116,16 @@ resource "aws_glue_catalog_table" "tbl_airports" {
       name    = "wikipedia_link"
       type    = "string"
       comment = "Wikipedia page URL"
+    }
+    columns {
+      name    = "cdc_operation"
+      type    = "string"
+      comment = "CDC operation type (I/U/D)"
+    }
+    columns {
+      name    = "cdc_timestamp"
+      type    = "timestamp"
+      comment = "CDC capture timestamp"
     }
     columns {
       name    = "cod_unico"

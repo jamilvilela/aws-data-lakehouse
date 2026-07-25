@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
-# etl_control — Pipeline execution control table
-# Source: Written by EtlControl class (Parquet append)
+# etl_control — Bronze: Pipeline execution control table
+# Source: Written by EtlControl class (Parquet append by Glue ETL)
 # Format: Parquet
 # Partition: reference_date
 # ------------------------------------------------------------------------------
