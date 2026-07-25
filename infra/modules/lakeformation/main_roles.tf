@@ -425,6 +425,44 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           "logs:TagLogGroup"
         ]
         Resource = "*"
+      },
+      # (18) 🔹 Lambda — listar, visualizar, testar e executar funções
+      {
+        Effect = "Allow"
+        Action = [
+          "lambda:ListFunctions",
+          "lambda:GetFunction",
+          "lambda:GetFunctionConfiguration",
+          "lambda:InvokeFunction",
+          "lambda:InvokeAsync",
+          "lambda:CreateFunction",
+          "lambda:DeleteFunction",
+          "lambda:UpdateFunctionConfiguration",
+          "lambda:UpdateFunctionCode",
+          "lambda:PublishVersion",
+          "lambda:ListVersionsByFunction",
+          "lambda:ListAliases",
+          "lambda:GetAlias",
+          "lambda:CreateAlias",
+          "lambda:UpdateAlias",
+          "lambda:DeleteAlias",
+          "lambda:GetEventSourceMapping",
+          "lambda:ListEventSourceMappings",
+          "lambda:CreateEventSourceMapping",
+          "lambda:UpdateEventSourceMapping",
+          "lambda:DeleteEventSourceMapping",
+          "lambda:AddPermission",
+          "lambda:RemovePermission",
+          "lambda:GetPolicy",
+          "lambda:ListTags",
+          "lambda:TagResource",
+          "lambda:UntagResource",
+          "lambda:GetLayerVersion",
+          "lambda:ListLayerVersions",
+          "lambda:PublishLayerVersion",
+          "lambda:DeleteLayerVersion"
+        ]
+        Resource = "*"
       }
     ]
   })
