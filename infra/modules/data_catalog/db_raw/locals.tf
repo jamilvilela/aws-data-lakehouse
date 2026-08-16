@@ -14,10 +14,14 @@ locals {
   output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
 
   # ── Delta Lake tables (DMS CDC from Aurora PostgreSQL) ─────────────────
+  # spark.sql.sources.provider is required so that Delta Lake (DeltaTable.forName)
+  # recognizes the table as Delta via the Spark catalog — classification/table_type
+  # alone are not enough.
   delta_parameters = {
-    classification  = "delta"
-    table_type      = "delta"
-    compressionType = "snappy"
+    classification               = "delta"
+    table_type                   = "delta"
+    compressionType              = "snappy"
+    "spark.sql.sources.provider" = "delta"
   }
 
   delta_partition_key = {
