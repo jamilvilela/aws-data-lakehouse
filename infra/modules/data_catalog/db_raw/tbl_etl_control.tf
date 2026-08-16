@@ -18,7 +18,7 @@ resource "aws_glue_catalog_table" "etl_control" {
   }
 
   storage_descriptor {
-    location      = "s3://${var.buckets.raw}/tables/etl_control/"
+    location      = "${local.tables_root}/${var.tables.etl_control}/"
     input_format  = local.input_format
     output_format = local.output_format
 

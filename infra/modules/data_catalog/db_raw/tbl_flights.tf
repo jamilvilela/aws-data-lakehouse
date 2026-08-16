@@ -18,13 +18,20 @@ resource "aws_glue_catalog_table" "tbl_flights" {
   }
 
   storage_descriptor {
-    location      = "s3://${var.buckets.raw}/tables/tbl_flights/"
+    location      = "${local.tables_root}/${var.tables.tbl_flights}/"
     input_format  = local.input_format
     output_format = local.output_format
 
     ser_de_info {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
+
+      # Delta connector (Athena/Trino) resolves table location from the "path"
+      # SerDe parameter — required in addition to storage_descriptor.location
+      parameters = {
+        "serialization.format" = "1"
+        "path"                 = "${local.tables_root}/${var.tables.tbl_flights}/"
+      }
     }
 
     columns {

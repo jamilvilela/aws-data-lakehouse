@@ -8,6 +8,8 @@ locals {
   # ── Common settings for all tables ─────────────────────────────────────
   table_type = "EXTERNAL_TABLE"
 
+  tables_root = "s3://${var.buckets.raw}/tables"
+
   input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
   output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
 

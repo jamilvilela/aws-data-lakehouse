@@ -18,7 +18,7 @@ resource "aws_glue_catalog_table" "data_quality_metrics" {
   }
 
   storage_descriptor {
-    location      = "s3://${var.buckets.raw}/tables/data_quality_metrics/"
+    location      = "${local.tables_root}/${var.tables.data_quality}/"
     input_format  = local.input_format
     output_format = local.output_format
 
