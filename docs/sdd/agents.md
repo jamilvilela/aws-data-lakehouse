@@ -73,9 +73,9 @@
 - Ensure schema compatibility with Athena and Spark
 
 **Tables owned:**
-- `opensky_flights` (landing zone, parquet, partitioned by `event_date`)
-- `etl_execution_control` (raw zone, tracks ETL runs)
-- `data_quality_metrics` (raw zone, tracks quality checks)
+- Delta Lake bronze tables (aircraft, airports, airlines, flights, aircraft_positions, countries, aircraft_types, routes) in `db_raw`
+- `etl_control` (tracks ETL runs)
+- `data_quality_metrics` (tracks quality checks)
 
 **Activation:** `@data-engineer design a new fact table` / `@data-engineer review partitioning`
 
@@ -86,7 +86,7 @@
 **Role:** Manages deployment pipelines, Terraform state, and environment promotion.
 
 **Responsibilities:**
-- Maintain `setup.sh` and `destroy.sh` scripts
+- Maintain `ci-cd/deploy.sh` and `ci-cd/rollback.sh` scripts
 - Manage Terraform remote state backend
 - Implement environment separation (dev, staging, prod)
 - Automate `terraform plan` and `terraform apply` in CI

@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# tbl_routes — Bronze: Route catalog between airports
-# Source: DMS CDC from flight_radar.routes (Aurora PostgreSQL)
-# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
-# PK natural source: id
-# ------------------------------------------------------------------------------
+# Bronze: route catalog (Delta Lake, CDC from flight_radar.routes)
 resource "aws_glue_catalog_table" "tbl_routes" {
   name          = var.tables.tbl_routes
   database_name = var.databases.raw
@@ -26,8 +21,6 @@ resource "aws_glue_catalog_table" "tbl_routes" {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
 
-      # Delta connector (Athena/Trino) resolves table location from the "path"
-      # SerDe parameter — required in addition to storage_descriptor.location
       parameters = {
         "serialization.format" = "1"
         "path"                 = "${local.tables_root}/${var.tables.tbl_routes}/"

@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# tbl_aircraft_positions — Bronze: Aircraft positions (high volume, streaming CDC)
-# Source: DMS CDC from flight_radar.aircraft_positions (Aurora PostgreSQL)
-# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
-# PK natural source: position_id, recorded_at (PARTITION BY RANGE no source)
-# ------------------------------------------------------------------------------
+# Bronze: aircraft positions (Delta Lake, CDC from flight_radar.aircraft_positions)
 resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
   name          = var.tables.tbl_aircraft_positions
   database_name = var.databases.raw
@@ -19,7 +14,7 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
   partition_keys {
     name    = "hour"
     type    = "int"
-    comment = "Hour extracted from recorded_at (0-23) — partition pruning para consultas sub-diárias"
+    comment = "Hour extracted from recorded_at (0-23) - partition pruning for sub-daily queries"
   }
 
   storage_descriptor {
@@ -31,8 +26,6 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
 
-      # Delta connector (Athena/Trino) resolves table location from the "path"
-      # SerDe parameter — required in addition to storage_descriptor.location
       parameters = {
         "serialization.format" = "1"
         "path"                 = "${local.tables_root}/${var.tables.tbl_aircraft_positions}/"

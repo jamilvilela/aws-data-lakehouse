@@ -2,14 +2,12 @@ variable "control_account" {
   type = string
 }
 
-############################################
-# IAM variables
 variable "lake_admin_name" {
   type        = string
-  description = "ARN of the lake-admin user (opcional se usar role de admin)"
+  description = "Name of the lake admin user to add to the admins group (legacy)"
   default     = ""
 }
-# infra/modules/lakeformation/variables.tf
+
 variable "datalake_role_arn" {
   type        = string
   description = "ARN of the datalake analytics IAM role"
@@ -40,8 +38,6 @@ variable "business_bucket_arn" {
   type        = string
 }
 
-############################################
-# Glue Catalog variables
 variable "databases" {
   description = "Glue databases for the data lake"
   type = object({
@@ -59,16 +55,14 @@ variable "tables" {
   })
 }
 
-##############################################
-# User credentials for the data lake
 variable "users" {
   description = "User credentials for the data lake"
   type = object({
-    datalake_admin     = object({
-      name     = string
+    datalake_admin = object({
+      name = string
     })
-    datalake_user1     = object({
-      name     = string
+    datalake_user1 = object({
+      name = string
     })
   })
 }

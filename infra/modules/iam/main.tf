@@ -25,7 +25,7 @@ resource "aws_iam_role" "datalake_role" {
 
 resource "aws_iam_policy" "datalake_policy" {
   name        = var.datalake_policy_name
-  description = "Policy for Data Lake service role — apenas S3 essencial (outros serviços têm roles próprias)"
+  description = "Policy for the Data Lake service role - S3 access to data lake zones"
 
   policy = jsonencode({
     Version = "2012-10-17"

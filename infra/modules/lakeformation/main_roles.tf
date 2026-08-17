@@ -1,21 +1,11 @@
-################################################################################
-# IAM Roles para Lake Formation - Uma por grupo lógico de usuários
-# 
-# Estas roles são usadas como principal no Lake Formation porque LF não suporta
-# IAM Groups como principal. Os usuários assumem estas roles via sts:AssumeRole
-# através de políticas de grupo (vide groups.tf).
-# 
-# Trust policy: permite que qualquer principal da conta assuma a role
-# (refinado depois com políticas de grupo específicas).
-################################################################################
+# IAM roles used as Lake Formation principals (LF does not support IAM groups
+# as principals). Users assume these roles via sts:AssumeRole from group policies.
 
-# ==============================================================================
-# Role para administradores do Data Lake 
-# ==============================================================================
+# Admin role (Lake Formation principal)
 
 resource "aws_iam_role" "datalake_admins_lf_role" {
-  name               = "datalake-admins-lf-role"
-  description        = "Role para administradores do Data Lake (Lake Formation principal)"
+  name        = "datalake-admins-lf-role"
+  description = "Role para administradores do Data Lake (Lake Formation principal)"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -30,8 +20,6 @@ resource "aws_iam_role" "datalake_admins_lf_role" {
   })
 }
 
-# Inline policy para que a role tenha permissões admin no Lake Formation
-# quando for assumida
 resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
   name = "AdminLakeFormationPolicy"
   role = aws_iam_role.datalake_admins_lf_role.id
@@ -39,7 +27,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # (1) Permissões gerais de Lake Formation / Glue / S3 (já existia)
       {
         Effect = "Allow"
         Action = [
@@ -60,7 +47,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (2) IAM para a role/policy de analytics 
       {
         Effect = "Allow"
         Action = [
@@ -89,7 +75,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           var.datalake_policy_arn
         ]
       },
-      # (3) IAM para GRUPOS do datalake 
       {
         Effect = "Allow"
         Action = [
@@ -109,7 +94,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           aws_iam_group.datalake_users_external.arn
         ]
       },
-      # (4) IAM para USUÁRIOS do datalake 
       {
         Effect = "Allow"
         Action = [
@@ -126,7 +110,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           aws_iam_user.datalake_user1.arn
         ]
       },
-      # (5) Membership user <-> group (GroupMembership)
       {
         Effect = "Allow"
         Action = [
@@ -135,7 +118,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (6) IAM para as ROLES LF (corrige ListRolePolicies nas roles LF)
       {
         Effect = "Allow"
         Action = [
@@ -158,7 +140,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           aws_iam_role.lakeformation_workflow_role.arn
         ]
       },
-      # (7) IAM para as policies auxiliares (LF* policies)
       {
         Effect = "Allow"
         Action = [
@@ -177,7 +158,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
           aws_iam_policy.lf_governed_table_policy.arn
         ]
       },
-      # (8) 🔹 Permissões para consultar a service-linked role do Lake Formation      
       {
         Effect = "Allow"
         Action = [
@@ -197,7 +177,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
       },
-      # (9) 🔹 SQS — gerenciar filas
       {
         Effect = "Allow"
         Action = [
@@ -215,7 +194,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (10) 🔹 SNS — gerenciar tópicos e assinaturas
       {
         Effect = "Allow"
         Action = [
@@ -233,7 +211,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (11) 🔹 Athena — executar e visualizar consultas
       {
         Effect = "Allow"
         Action = [
@@ -255,7 +232,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (12) 🔹 Kinesis Data Streams — consultar streams
       {
         Effect = "Allow"
         Action = [
@@ -277,7 +253,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (13) 🔹 Firehose — gerenciar delivery streams
       {
         Effect = "Allow"
         Action = [
@@ -293,7 +268,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (14) 🔹 Managed Service for Apache Flink (ex-Kinesis Analytics / Flink)
       {
         Effect = "Allow"
         Action = [
@@ -321,7 +295,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (15) 🔹 RDS / Aurora — administrar (inclui global clusters)
       {
         Effect = "Allow"
         Action = [
@@ -364,7 +337,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (16) 🔹 AWS Batch — ver e executar jobs
       {
         Effect = "Allow"
         Action = [
@@ -389,7 +361,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (17) 🔹 CloudWatch — métricas, dashboards, alarmes e logs
       {
         Effect = "Allow"
         Action = [
@@ -426,7 +397,6 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
         ]
         Resource = "*"
       },
-      # (18) 🔹 Lambda — listar, visualizar, testar e executar funções
       {
         Effect = "Allow"
         Action = [
@@ -468,13 +438,11 @@ resource "aws_iam_role_policy" "datalake_admins_lf_inline_policy" {
   })
 }
 
-# ==============================================================================
-# Role para usuários internos do Data Lake
-# ==============================================================================
+# Internal users role (Lake Formation principal)
 
 resource "aws_iam_role" "datalake_users_internal_lf_role" {
-  name               = "datalake-users-internal-lf-role"
-  description        = "Role para usuários internos do Data Lake (Lake Formation principal)"
+  name        = "datalake-users-internal-lf-role"
+  description = "Role para usuários internos do Data Lake (Lake Formation principal)"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -489,7 +457,6 @@ resource "aws_iam_role" "datalake_users_internal_lf_role" {
   })
 }
 
-# Inline policy para acesso de leitura ao Lake Formation
 resource "aws_iam_role_policy" "datalake_users_internal_lf_inline_policy" {
   name = "InternalUserLakeFormationPolicy"
   role = aws_iam_role.datalake_users_internal_lf_role.id
@@ -521,13 +488,11 @@ resource "aws_iam_role_policy" "datalake_users_internal_lf_inline_policy" {
   })
 }
 
-# ==============================================================================
-# Role para usuários externos do Data Lake
-# ==============================================================================
+# External users role (Lake Formation principal)
 
 resource "aws_iam_role" "datalake_users_external_lf_role" {
-  name               = "datalake-users-external-lf-role"
-  description        = "Role para usuários externos do Data Lake (Lake Formation principal)"
+  name        = "datalake-users-external-lf-role"
+  description = "Role para usuários externos do Data Lake (Lake Formation principal)"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -542,7 +507,6 @@ resource "aws_iam_role" "datalake_users_external_lf_role" {
   })
 }
 
-# Inline policy com acesso muito restrito (apenas business database, leitura)
 resource "aws_iam_role_policy" "datalake_users_external_lf_inline_policy" {
   name = "ExternalUserLakeFormationPolicy"
   role = aws_iam_role.datalake_users_external_lf_role.id
@@ -571,9 +535,7 @@ resource "aws_iam_role_policy" "datalake_users_external_lf_inline_policy" {
   })
 }
 
-# ==============================================================================
-# Role para workflows do Lake Formation (serviço)
-# ==============================================================================
+# Lake Formation workflow role (service)
 
 resource "aws_iam_role" "lakeformation_workflow_role" {
   name        = "LFWorkflowRole"

@@ -78,7 +78,7 @@ resource "aws_lakeformation_permissions" "example" {
 - ⚠️ Slightly more complex setup
 
 ### Mitigations
-- `setup.sh` script automates role assumption for Terraform deployment
+- `ci-cd/deploy.sh` script automates role assumption for Terraform deployment
 - Console users can switch role in the AWS Console UI
 - SDK users can use `sts:AssumeRole` programmatically
 

@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# tbl_aircraft — Bronze: Aircraft registry
-# Source: DMS CDC from flight_radar.aircraft (Aurora PostgreSQL)
-# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
-# PK natural source: icao24
-# ------------------------------------------------------------------------------
+# Bronze: aircraft registry (Delta Lake, CDC from flight_radar.aircraft)
 resource "aws_glue_catalog_table" "tbl_aircraft" {
   name          = var.tables.tbl_aircraft
   database_name = var.databases.raw
@@ -26,8 +21,6 @@ resource "aws_glue_catalog_table" "tbl_aircraft" {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
 
-      # Delta connector (Athena/Trino) resolves table location from the "path"
-      # SerDe parameter — required in addition to storage_descriptor.location
       parameters = {
         "serialization.format" = "1"
         "path"                 = "${local.tables_root}/${var.tables.tbl_aircraft}/"

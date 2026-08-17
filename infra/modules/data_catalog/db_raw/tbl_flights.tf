@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# tbl_flights — Bronze: Flights fact table
-# Source: DMS CDC from flight_radar.flights (Aurora PostgreSQL)
-# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
-# PK natural source: flight_id
-# ------------------------------------------------------------------------------
+# Bronze: flights fact table (Delta Lake, CDC from flight_radar.flights)
 resource "aws_glue_catalog_table" "tbl_flights" {
   name          = var.tables.tbl_flights
   database_name = var.databases.raw
@@ -26,8 +21,6 @@ resource "aws_glue_catalog_table" "tbl_flights" {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
 
-      # Delta connector (Athena/Trino) resolves table location from the "path"
-      # SerDe parameter — required in addition to storage_descriptor.location
       parameters = {
         "serialization.format" = "1"
         "path"                 = "${local.tables_root}/${var.tables.tbl_flights}/"

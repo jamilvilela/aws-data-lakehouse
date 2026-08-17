@@ -16,7 +16,8 @@ locals {
   # ── Delta Lake tables (DMS CDC from Aurora PostgreSQL) ─────────────────
   # spark.sql.sources.provider is required so that Delta Lake (DeltaTable.forName)
   # recognizes the table as Delta via the Spark catalog — classification/table_type
-  # alone are not enough.
+  # alone are not enough. Each table also sets a "path" SerDe parameter so the
+  # Athena/Trino Delta connector resolves the table location.
   delta_parameters = {
     classification               = "delta"
     table_type                   = "delta"

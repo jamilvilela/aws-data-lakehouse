@@ -32,13 +32,14 @@
 | **Data Lakehouse** | Modern data architecture combining data lake flexibility with warehouse ACID transactions and governance. |
 | **`datalake-admins`** | IAM group with full administrative access to the data lake. |
 | **`datalake-admins-lf-role`** | IAM role used as Lake Formation principal for admin-level permissions. |
-| **`datalake-policy`** | Main IAM policy attached to the analytics role, covering S3, Glue, Athena, LF, and other services. |
+| **`datalake-policy`** | Main IAM policy attached to the analytics role, covering S3 access to the data lake zones. |
 | **`datalake-users-internal`** | IAM group with read-only access to all data lake zones. |
 | **`datalake-users-external`** | IAM group with read-only access limited to the business zone. |
 
-| **`db_raw`** | Glue database for raw zone tables (e.g., `etl_execution_control`, `data_quality_metrics`). |
+| **`db_raw`** | Glue database for raw zone tables (Delta Lake bronze tables, `etl_control`, `data_quality_metrics`). |
 | **`db_trusted`** | Glue database for trusted/refined zone tables. |
 | **`db_business`** | Glue database for business-ready zone tables. |
+| **Delta Lake** | Open table format providing ACID transactions, time travel, and schema enforcement on Parquet data. Used for bronze CDC tables. |
 
 ## E
 
@@ -130,9 +131,9 @@
 
 | Variable | Description | Used In |
 |---|---|---|
-| `AWS_PROFILE` | AWS CLI profile | `setup.sh`, `destroy.sh` |
-| `AWS_REGION` | AWS region (default: `us-east-1`) | `setup.sh`, `destroy.sh` |
-| `TF_VAR_user_lake_admin_name` | Legacy lake admin variable | `setup.sh` |
+| `AWS_PROFILE` | AWS CLI profile | `ci-cd/deploy.sh`, `ci-cd/rollback.sh` |
+| `AWS_REGION` | AWS region (default: `us-east-1`) | `ci-cd/deploy.sh`, `ci-cd/rollback.sh` |
+| `TF_VAR_user_lake_admin_name` | Legacy lake admin variable | `ci-cd/deploy.sh` |
 
 ## Terraform Conventions
 

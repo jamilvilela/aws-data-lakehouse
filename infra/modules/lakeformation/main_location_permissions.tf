@@ -1,6 +1,4 @@
-############################################
-# DATA_LOCATION_ACCESS para o service role (Glue/EMR/Athena)
-############################################
+# DATA_LOCATION_ACCESS for the service role (Glue/EMR/Athena)
 
 resource "aws_lakeformation_permissions" "raw_location_datalake_role" {
   principal   = var.datalake_role_arn
@@ -35,9 +33,7 @@ resource "aws_lakeformation_permissions" "business_location_datalake_role" {
   depends_on = [aws_lakeformation_resource.business_datalake_location]
 }
 
-############################################
-# DATA_LOCATION_ACCESS para o admin LF (datalake-admins-lf-role)
-############################################
+# DATA_LOCATION_ACCESS for the LF admin role
 
 resource "aws_lakeformation_permissions" "raw_location_admins" {
   principal   = aws_iam_role.datalake_admins_lf_role.arn
@@ -72,9 +68,7 @@ resource "aws_lakeformation_permissions" "business_location_admins" {
   depends_on = [aws_lakeformation_resource.business_datalake_location]
 }
 
-############################################
-# DATA_LOCATION_ACCESS para usuario interno LF
-############################################
+# DATA_LOCATION_ACCESS for the internal users LF role
 
 resource "aws_lakeformation_permissions" "raw_location_internal_users" {
   principal   = aws_iam_role.datalake_users_internal_lf_role.arn
@@ -109,9 +103,7 @@ resource "aws_lakeformation_permissions" "business_location_internal_users" {
   depends_on = [aws_lakeformation_resource.business_datalake_location]
 }
 
-############################################
-# DATA_LOCATION_ACCESS para usuario externo LF
-############################################
+# DATA_LOCATION_ACCESS for the external users LF role
 
 resource "aws_lakeformation_permissions" "business_location_external_users" {
   principal   = aws_iam_role.datalake_users_external_lf_role.arn

@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# data_quality_metrics — Bronze: Data quality metrics table
-# Source: Written by QualityMetrics class (Parquet append by Glue ETL)
-# Format: Parquet
-# Partition: reference_date
-# ------------------------------------------------------------------------------
+# Bronze: data quality metrics (Parquet, written by Glue ETL)
 resource "aws_glue_catalog_table" "data_quality_metrics" {
   name          = var.tables.data_quality
   database_name = var.databases.raw

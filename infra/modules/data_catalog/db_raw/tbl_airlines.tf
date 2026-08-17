@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# tbl_airlines — Bronze: Airlines reference
-# Source: DMS CDC from flight_radar.airlines (Aurora PostgreSQL)
-# Format: Delta Lake (bronze/raw — fiel ao source, com metadados CDC)
-# PK natural source: icao_code
-# ------------------------------------------------------------------------------
+# Bronze: airlines reference (Delta Lake, CDC from flight_radar.airlines)
 resource "aws_glue_catalog_table" "tbl_airlines" {
   name          = var.tables.tbl_airlines
   database_name = var.databases.raw
@@ -26,8 +21,6 @@ resource "aws_glue_catalog_table" "tbl_airlines" {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
 
-      # Delta connector (Athena/Trino) resolves table location from the "path"
-      # SerDe parameter — required in addition to storage_descriptor.location
       parameters = {
         "serialization.format" = "1"
         "path"                 = "${local.tables_root}/${var.tables.tbl_airlines}/"

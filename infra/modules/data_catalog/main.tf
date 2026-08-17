@@ -1,11 +1,4 @@
-#===============================================================================
-# Data Catalog Module — Bronze Layer (Raw Database Tables)
-# As tabelas bronze armazenam os dados exatamente como recebidos da origem,
-# com colunas de metadados CDC para auditoria e idempotência (cdc_operation,
-# cdc_timestamp, cod_unico). Particionadas por event_date para manutenção
-# eficiente e suporte a Delta Lake.
-#===============================================================================
-
+# Data catalog module - Bronze layer (raw database tables)
 module "db_raw" {
   source = "./db_raw"
 

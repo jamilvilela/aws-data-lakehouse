@@ -1,4 +1,3 @@
-############################################
 variable "buckets" {
   description = "S3 buckets for the data lake"
   type = object({
@@ -13,10 +12,10 @@ variable "buckets" {
 variable "tags" {
   description = "Tags to apply to all S3 buckets"
   type        = map(string)
-  default     = {
+  default = {
     Environment = "dev"
     Project     = "DataLake"
-    GitHubRepo = "https://github.com/jamilvilela/aws-data-lakehouse.git"
+    GitHubRepo  = "https://github.com/jamilvilela/aws-data-lakehouse.git"
   }
 }
 
