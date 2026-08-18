@@ -8,13 +8,9 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
   parameters = local.delta_parameters
 
   partition_keys {
-    name = local.delta_partition_key.name
-    type = local.delta_partition_key.type
-  }
-  partition_keys {
-    name    = "hour"
-    type    = "int"
-    comment = "Hour extracted from recorded_at (0-23) - partition pruning for sub-daily queries"
+    name    = "aircraft_icao24"
+    type    = "string"
+    comment = "Aircraft ICAO24 address - partition pruning by aircraft"
   }
 
   storage_descriptor {
@@ -36,11 +32,6 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
       name    = "position_id"
       type    = "bigint"
       comment = "Position ID (PK)"
-    }
-    columns {
-      name    = "aircraft_icao24"
-      type    = "string"
-      comment = "Aircraft ICAO24 address (FK → aircraft)"
     }
     columns {
       name    = "flight_id"
@@ -103,7 +94,7 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
       comment = "CDC capture timestamp"
     }
     columns {
-      name    = "cod_unico"
+      name    = "cod_unique"
       type    = "string"
       comment = "PK concatenation (position_id_recorded_at)"
     }

@@ -128,7 +128,7 @@ resource "aws_glue_catalog_table" "tbl_airports" {
       comment = "CDC capture timestamp"
     }
     columns {
-      name    = "cod_unico"
+      name    = "cod_unique"
       type    = "string"
       comment = "PK concatenation (icao_code)"
     }

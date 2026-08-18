@@ -97,7 +97,7 @@
 | 4.5 | Catalog | Grant LF database-level permissions | ✅ Complete |
 | 4.6 | Catalog | Grant LF table-level permissions | ✅ Complete |
 
-**Partitioning Strategy:** All tables use date-based partitioning (`event_date` for Delta Lake tables, `reference_date` for Parquet tables).
+**Partitioning Strategy:** Delta Lake tables are partitioned by `event_date` (date) — `tbl_flights` derives it from `scheduled_departure` (`%Y-%m-%d`) — except `tbl_aircraft_positions`, which is partitioned by `aircraft_icao24` (string). Parquet tables use `reference_date` (date).
 
 ---
 
