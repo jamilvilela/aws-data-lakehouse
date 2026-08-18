@@ -13,7 +13,7 @@ locals {
   input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
   output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
 
-  # ── Delta Lake tables (DMS CDC from Aurora PostgreSQL) ─────────────────
+  # ── Delta Lake tables (CDC from Aurora PostgreSQL) ─────────────────
   # spark.sql.sources.provider is required so that Delta Lake (DeltaTable.forName)
   # recognizes the table as Delta via the Spark catalog — classification/table_type
   # alone are not enough. Each table also sets a "path" SerDe parameter so the

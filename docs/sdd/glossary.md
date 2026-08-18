@@ -131,8 +131,8 @@
 
 | Variable | Description | Used In |
 |---|---|---|
-| `AWS_PROFILE` | AWS CLI profile | `ci-cd/deploy.sh`, `ci-cd/rollback.sh` |
-| `AWS_REGION` | AWS region (default: `us-east-1`) | `ci-cd/deploy.sh`, `ci-cd/rollback.sh` |
+| `AWS_PROFILE` | AWS CLI profile | `ci-cd/deploy.sh`, `ci-cd/destroy.sh` |
+| `AWS_REGION` | AWS region (default: `us-east-1`) | `ci-cd/deploy.sh`, `ci-cd/destroy.sh` |
 | `TF_VAR_user_lake_admin_name` | Legacy lake admin variable | `ci-cd/deploy.sh` |
 
 ## Terraform Conventions

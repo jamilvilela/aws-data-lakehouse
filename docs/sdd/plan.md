@@ -106,7 +106,7 @@
 | Step | Description | Status |
 |---|---|---|
 | 5.1 | `ci-cd/deploy.sh` — Full deploy with role assumption | ✅ Complete |
-| 5.2 | `ci-cd/rollback.sh` — Full teardown with role assumption | ✅ Complete |
+| 5.2 | `ci-cd/destroy.sh` — Full teardown with role assumption | ✅ Complete |
 | 5.3 | `.env` loading and validation | ✅ Complete |
 | 5.4 | Post-deploy validation (groups, roles, databases) | ✅ Complete |
 

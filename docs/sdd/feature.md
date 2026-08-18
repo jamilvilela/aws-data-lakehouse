@@ -295,9 +295,10 @@ Shell scripts for automated deployment and teardown with proper role assumption.
 - Runs `terraform init`, `validate`, `plan`, `apply`
 - Validates deployment (groups, roles, databases)
 
-**`ci-cd/rollback.sh`**
+**`ci-cd/destroy.sh`**
 - Loads `.env` file
 - Assumes `datalake-admins-lf-role`
+- Requires typing `destroy_all` to confirm the destructive operation
 - Runs `terraform destroy -auto-approve`
 
 ### Acceptance Criteria

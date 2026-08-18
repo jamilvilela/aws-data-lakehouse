@@ -136,9 +136,9 @@
 
 ```bash
 # Load environment and assume LF admin role
-# (automatic in ci-cd/rollback.sh)
+# (automatic in ci-cd/destroy.sh)
 
-./ci-cd/rollback.sh
+./ci-cd/destroy.sh
 ```
 
 ### Validate

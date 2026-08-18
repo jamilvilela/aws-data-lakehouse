@@ -86,7 +86,7 @@
 **Role:** Manages deployment pipelines, Terraform state, and environment promotion.
 
 **Responsibilities:**
-- Maintain `ci-cd/deploy.sh` and `ci-cd/rollback.sh` scripts
+- Maintain `ci-cd/deploy.sh` and `ci-cd/destroy.sh` scripts
 - Manage Terraform remote state backend
 - Implement environment separation (dev, staging, prod)
 - Automate `terraform plan` and `terraform apply` in CI

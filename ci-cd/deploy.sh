@@ -25,28 +25,28 @@ fail()  { echo -e "${RED}${1}${NC}"; }
 
 load_environment() {
   if [ ! -f "${ROOT_DIR}/.env" ]; then
-    fail "Erro: arquivo .env não encontrado."
-    echo "Copie .env.example para .env e preencha com seus valores."
+    fail "Error: .env file not found."
+    echo "Copy .env.example to .env and fill in your values."
     exit 1
   fi
 
   source "${ROOT_DIR}/.env"
   export TF_VAR_user_lake_admin_name="${user_lake_admin_name:-}"
-  ok "Variáveis carregadas com sucesso."
+  ok "Variables loaded successfully."
 }
 
 assume_admin_role() {
   local current_arn account_id role_arn creds
 
-  warn "Verificando role atual..."
+  warn "Checking current role..."
   current_arn=$(aws sts get-caller-identity --query Arn --output text)
 
   if [[ "${current_arn}" == *"assumed-role/${LF_ADMIN_ROLE}/"* ]]; then
-    ok "Role ${LF_ADMIN_ROLE} já está em uso."
+    ok "Role ${LF_ADMIN_ROLE} is already in use."
     return
   fi
 
-  warn "Assumindo role ${LF_ADMIN_ROLE}..."
+  warn "Assuming role ${LF_ADMIN_ROLE}..."
   account_id=$(aws sts get-caller-identity --query Account --output text)
   role_arn="arn:aws:iam::${account_id}:role/${LF_ADMIN_ROLE}"
 
@@ -58,7 +58,7 @@ assume_admin_role() {
     --output text)
 
   if [ -z "${creds}" ]; then
-    fail "Erro ao assumir a role ${role_arn}"
+    fail "Error assuming role ${role_arn}"
     exit 1
   fi
 
@@ -67,7 +67,7 @@ assume_admin_role() {
   unset AWS_PROFILE
   export AWS_REGION="${AWS_REGION:-us-east-1}"
 
-  ok "Role assumida com sucesso:"
+  ok "Role assumed successfully:"
   aws sts get-caller-identity
 }
 
@@ -89,9 +89,9 @@ validate_deployment() {
 
   groups=$(aws iam list-groups --query 'Groups[?starts_with(GroupName, `datalake`)].GroupName' --output text)
   if [ -z "${groups}" ]; then
-    fail "Grupos IAM não encontrados."
+    fail "IAM groups not found."
   else
-    ok "Grupos IAM:"
+    ok "IAM groups:"
     for group in ${groups}; do
       echo "  - ${group}"
     done
@@ -99,9 +99,9 @@ validate_deployment() {
 
   roles=$(aws iam list-roles --query 'Roles[?contains(RoleName, `datalake`) && contains(RoleName, `lf`)].RoleName' --output text)
   if [ -z "${roles}" ]; then
-    fail "Roles LF não encontradas."
+    fail "LF roles not found."
   else
-    ok "Roles LF:"
+    ok "LF roles:"
     for role in ${roles}; do
       echo "  - ${role}"
     done
@@ -109,9 +109,9 @@ validate_deployment() {
 
   databases=$(aws glue get-databases --query 'DatabaseList[].Name' --output text)
   if [ -z "${databases}" ]; then
-    fail "Databases Glue não encontrados."
+    fail "Glue databases not found."
   else
-    ok "Databases Glue:"
+    ok "Glue databases:"
     for db in ${databases}; do
       echo "  - ${db}"
     done
@@ -119,9 +119,9 @@ validate_deployment() {
 
   tables=$(aws glue get-tables --database-name db_raw --query 'TableList[].Name' --output text)
   if [ -z "${tables}" ]; then
-    fail "Tabelas em db_raw não encontradas."
+    fail "Tables in db_raw not found."
   else
-    ok "Tabelas em db_raw:"
+    ok "Tables in db_raw:"
     for table in ${tables}; do
       echo "  - ${table}"
     done
@@ -135,7 +135,7 @@ main() {
   assume_admin_role
   terraform_apply
   validate_deployment
-  ok "Deploy concluído."
+  ok "Deploy completed."
 }
 
 main "$@"
