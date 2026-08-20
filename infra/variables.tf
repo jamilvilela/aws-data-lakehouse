@@ -8,6 +8,11 @@ variable "datalake_policy_name" {
   description = "Name of the main data lake IAM policy"
 }
 
+variable "datalake_job_role_name" {
+  type        = string
+  description = "Name of the Glue job role that writes to the raw layer (flight radar pipeline). The full ARN is assembled in locals using the account ID."
+}
+
 variable "user_lake_admin_name" {
   type        = string
   description = "Name of the lake admin user added to the admins group (legacy)"

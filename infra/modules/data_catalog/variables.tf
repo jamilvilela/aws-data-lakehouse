@@ -8,6 +8,11 @@ variable "datalake_role_arn" {
   description = "ARN of the datalake service role (Glue, EMR, etc)"
 }
 
+variable "datalake_job_role_arn" {
+  type        = string
+  description = "ARN of the Glue job role that writes to the raw layer"
+}
+
 variable "datalake_admins_principal_arn" {
   type        = string
   description = "ARN of the datalake-admins-lf-role (used as LF principal)"

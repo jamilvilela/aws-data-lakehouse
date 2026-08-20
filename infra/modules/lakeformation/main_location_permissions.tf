@@ -11,6 +11,19 @@ resource "aws_lakeformation_permissions" "raw_location_datalake_role" {
   depends_on = [aws_lakeformation_resource.raw_datalake_location]
 }
 
+# DATA_LOCATION_ACCESS for the Glue job role (flight radar pipeline)
+
+resource "aws_lakeformation_permissions" "raw_location_job_role" {
+  principal   = var.datalake_job_role_arn
+  permissions = ["DATA_LOCATION_ACCESS"]
+
+  data_location {
+    arn = var.raw_bucket_arn
+  }
+
+  depends_on = [aws_lakeformation_resource.raw_datalake_location]
+}
+
 resource "aws_lakeformation_permissions" "trusted_location_datalake_role" {
   principal   = var.datalake_role_arn
   permissions = ["DATA_LOCATION_ACCESS"]

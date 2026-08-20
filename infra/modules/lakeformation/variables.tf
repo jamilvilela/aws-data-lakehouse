@@ -18,6 +18,11 @@ variable "datalake_policy_arn" {
   description = "ARN of the datalake analytics IAM policy"
 }
 
+variable "datalake_job_role_arn" {
+  type        = string
+  description = "ARN of the Glue job role that writes to the raw layer"
+}
+
 variable "workspace_bucket_arn" {
   description = "ARN of the workspace S3 bucket"
   type        = string

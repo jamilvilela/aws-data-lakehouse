@@ -11,6 +11,10 @@
 *.backup
 LICENSE.txt
 
+# Terraform variable files (sensitive) - keep the .example tracked
+terraform.tfvars
+terraform.tfvars.json
+
 # Python files
 __pycache__/
 *.pyc

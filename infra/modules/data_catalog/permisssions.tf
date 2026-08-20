@@ -5,6 +5,37 @@
 
 # Database-level permissions
 
+# Service role (Glue, EMR) - database visibility and table creation
+resource "aws_lakeformation_permissions" "grant_datalake_database_raw" {
+  permissions = ["DESCRIBE", "CREATE_TABLE"]
+  principal   = var.datalake_role_arn
+  catalog_id  = var.control_account
+  database {
+    name = var.databases.raw
+  }
+  depends_on = [aws_glue_catalog_database.db_raw]
+}
+
+resource "aws_lakeformation_permissions" "grant_datalake_database_trusted" {
+  permissions = ["DESCRIBE", "CREATE_TABLE"]
+  principal   = var.datalake_role_arn
+  catalog_id  = var.control_account
+  database {
+    name = var.databases.trusted
+  }
+  depends_on = [aws_glue_catalog_database.db_trusted]
+}
+
+resource "aws_lakeformation_permissions" "grant_datalake_database_business" {
+  permissions = ["DESCRIBE", "CREATE_TABLE"]
+  principal   = var.datalake_role_arn
+  catalog_id  = var.control_account
+  database {
+    name = var.databases.business
+  }
+  depends_on = [aws_glue_catalog_database.db_business]
+}
+
 # Admins - all databases
 resource "aws_lakeformation_permissions" "grant_admins_database_raw" {
   permissions = ["DESCRIBE", "CREATE_TABLE", "ALTER"]
@@ -88,6 +119,30 @@ resource "aws_lakeformation_permissions" "grant_dml_db_raw" {
   table {
     database_name = var.databases.raw
     wildcard      = true
+  }
+  depends_on = [aws_glue_catalog_database.db_raw]
+}
+
+# Glue job role (flight radar pipeline) - DML operations on raw tables
+resource "aws_lakeformation_permissions" "grant_job_dml_db_raw" {
+  permissions = ["DESCRIBE", "SELECT", "ALTER", "INSERT", "DELETE"]
+  principal   = var.datalake_job_role_arn
+  catalog_id  = var.control_account
+  table {
+    database_name = var.databases.raw
+    wildcard      = true
+  }
+  depends_on = [aws_glue_catalog_database.db_raw]
+}
+
+# Glue job role (flight radar pipeline) - database visibility (DESCRIBE)
+# required for the Spark session to resolve db_raw.<table> by name.
+resource "aws_lakeformation_permissions" "grant_job_describe_db_raw" {
+  permissions = ["DESCRIBE"]
+  principal   = var.datalake_job_role_arn
+  catalog_id  = var.control_account
+  database {
+    name = var.databases.raw
   }
   depends_on = [aws_glue_catalog_database.db_raw]
 }
