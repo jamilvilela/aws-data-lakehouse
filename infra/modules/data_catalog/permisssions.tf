@@ -125,7 +125,7 @@ resource "aws_lakeformation_permissions" "grant_dml_db_raw" {
 
 # Glue job role (flight radar pipeline) - DML operations on raw tables
 resource "aws_lakeformation_permissions" "grant_job_dml_db_raw" {
-  permissions = ["DESCRIBE", "SELECT", "ALTER", "INSERT", "DELETE"]
+  permissions = ["DESCRIBE", "SELECT", "INSERT", "DELETE"]
   principal   = var.datalake_job_role_arn
   catalog_id  = var.control_account
   table {

@@ -37,8 +37,9 @@ locals {
 
   # ── Parquet tables (control/quality) ───────────────────────────────────
   parquet_parameters = {
-    classification  = "parquet"
-    compressionType = "snappy"
+    classification               = "parquet"
+    compressionType              = "snappy"
+    "spark.sql.sources.provider" = "parquet"
   }
 
   parquet_partition_key = {
