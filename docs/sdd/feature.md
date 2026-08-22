@@ -180,7 +180,6 @@ Create and manage AWS Glue Catalog databases and tables for metadata management,
 
 | Database | S3 Location | Purpose |
 |---|---|---|
-| `db_landing` | `s3://lakehouse-landing-*/` | Landing zone metadata |
 | `db_raw` | `s3://lakehouse-raw-*/` | Raw zone metadata |
 | `db_trusted` | `s3://lakehouse-trusted-*/` | Trusted zone metadata |
 | `db_business` | `s3://lakehouse-business-*/` | Business zone metadata |
@@ -212,15 +211,15 @@ Create and manage AWS Glue Catalog databases and tables for metadata management,
 
 **Table Level:**
 
-| Principal | Landing | Raw | Trusted | Business |
-|---|---|---|---|---|
-| `datalake-role-arn` (service) | SELECT, INSERT, ALTER, DELETE | Full DML | Full DML | Full DML |
-| `datalake-admins-lf-role` | SELECT, INSERT, ALTER, DELETE | Full DML | Full DML | Full DML |
-| `datalake-users-internal-lf-role` | DESCRIBE, SELECT | DESCRIBE, SELECT | DESCRIBE, SELECT | DESCRIBE, SELECT |
-| `datalake-users-external-lf-role` | ❌ | ❌ | ❌ | DESCRIBE, SELECT |
+| Principal | Raw | Trusted | Business |
+|---|---|---|---|
+| `datalake-role-arn` (service) | Full DML | Full DML | Full DML |
+| `datalake-admins-lf-role` | Full DML | Full DML | Full DML |
+| `datalake-users-internal-lf-role` | DESCRIBE, SELECT | DESCRIBE, SELECT | DESCRIBE, SELECT |
+| `datalake-users-external-lf-role` | ❌ | ❌ | DESCRIBE, SELECT |
 
 ### Acceptance Criteria
-- [x] 4 Glue databases created with correct locations
+- [x] 3 Glue databases created with correct locations
 - [x] 3 Glue tables created with correct schemas and partitions
 - [x] Database-level DESCRIBE permissions granted
 - [x] Table-level permissions granted per 3-tier model

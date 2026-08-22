@@ -8,26 +8,23 @@ resource "aws_glue_catalog_table" "etl_control" {
   name          = var.tables.etl_control
   database_name = var.databases.raw
 
-  table_type = "EXTERNAL_TABLE"
+  table_type = local.table_type
 
-  parameters = {
-    classification  = "parquet"
-    compressionType = "snappy"
-  }
+  parameters = local.parquet_parameters
 
   partition_keys {
-    name = "reference_date"
-    type = "date"
+    name = local.parquet_partition_key.name
+    type = local.parquet_partition_key.type
   }
 
   storage_descriptor {
     location      = "s3://${var.buckets.raw}/tables/etl_control/"
-    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
-    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+    input_format  = local.input_format
+    output_format = local.output_format
 
     ser_de_info {
-      name                  = "parquet"
-      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+      name                  = local.parquet_ser_de.name
+      serialization_library = local.parquet_ser_de.serialization_library
     }
 
     columns {

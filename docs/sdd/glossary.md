@@ -35,7 +35,7 @@
 | **`datalake-policy`** | Main IAM policy attached to the analytics role, covering S3, Glue, Athena, LF, and other services. |
 | **`datalake-users-internal`** | IAM group with read-only access to all data lake zones. |
 | **`datalake-users-external`** | IAM group with read-only access limited to the business zone. |
-| **`db_landing`** | Glue database for landing zone tables (e.g., `opensky_flights`). |
+
 | **`db_raw`** | Glue database for raw zone tables (e.g., `etl_execution_control`, `data_quality_metrics`). |
 | **`db_trusted`** | Glue database for trusted/refined zone tables. |
 | **`db_business`** | Glue database for business-ready zone tables. |

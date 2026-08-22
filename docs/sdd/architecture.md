@@ -172,7 +172,7 @@ graph TD
         end
 
         subgraph "Glue Catalog"
-            GLDB[Databases<br/>landing, raw, trusted, business]
+            GLDB[Databases<br/>raw, trusted, business]
             GLTables[Tables<br/>opensky, etl_control, data_quality]
         end
 
@@ -227,10 +227,6 @@ graph TD
 ---
 
 ## Data Catalog Schema
-
-### Database: `db_landing`
-
-*(No tables currently — reserved for future landing zone tables)*
 
 ### Database: `db_raw`
 
