@@ -1,7 +1,4 @@
-#===============================================================================
-# Data Catalog Module — Raw Database Tables
-#===============================================================================
-
+# Data catalog module - Bronze layer (raw database tables)
 module "db_raw" {
   source = "./db_raw"
 

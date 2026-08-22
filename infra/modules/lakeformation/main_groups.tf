@@ -1,30 +1,22 @@
-################################################################################
-# IAM Groups para Data Lake com modelo de acesso baseado em roles
-# 
-# Os usuários são adicionados aos grupos. Os grupos têm políticas que permitem
-# sts:AssumeRole para roles LF específicas. Assim, todas as permissões de
-# acesso ao Lake Formation vêm das roles, centralizando a governança.
-################################################################################
+# IAM groups with the 3-tier access model.
+# Users are added to groups; each group policy grants sts:AssumeRole on the
+# corresponding LF role, so Lake Formation permissions stay centralized on roles.
 
-# ==============================================================================
-# Grupo 1: datalake-admins
-# Permissões: criar/deletar/alterar catalogs, databases, tables, dados em S3, 
-#             visualizar em Athena, gerenciar Lake Formation
-# ==============================================================================
+# Admins: full access (catalog, tables, S3, Athena, Lake Formation)
 
 resource "aws_iam_group" "datalake_admins" {
   name = "datalake-admins"
 }
 
 resource "aws_iam_group_policy" "datalake_admins_assume_role" {
-  name   = "AllowAssumeAdminRole"
-  group  = aws_iam_group.datalake_admins.name
+  name  = "AllowAssumeAdminRole"
+  group = aws_iam_group.datalake_admins.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = "sts:AssumeRole"
+        Effect   = "Allow"
+        Action   = "sts:AssumeRole"
         Resource = aws_iam_role.datalake_admins_lf_role.arn
       }
     ]
@@ -62,14 +54,14 @@ resource "aws_iam_group_policy_attachment" "datalake_admins_cfn_readonly" {
 }
 
 resource "aws_iam_group_policy" "datalake_admins_slr" {
-  name   = "LakeFormationSLR"
-  group  = aws_iam_group.datalake_admins.name
+  name  = "LakeFormationSLR"
+  group = aws_iam_group.datalake_admins.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = "iam:CreateServiceLinkedRole"
+        Effect   = "Allow"
+        Action   = "iam:CreateServiceLinkedRole"
         Resource = "*"
         Condition = {
           StringEquals = {
@@ -78,8 +70,8 @@ resource "aws_iam_group_policy" "datalake_admins_slr" {
         }
       },
       {
-        Effect = "Allow"
-        Action = "iam:PutRolePolicy"
+        Effect   = "Allow"
+        Action   = "iam:PutRolePolicy"
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
       }
     ]
@@ -96,24 +88,21 @@ resource "aws_iam_group_policy_attachment" "datalake_admins_ram_access" {
   policy_arn = aws_iam_policy.lf_ram_access_policy.arn
 }
 
-# ==============================================================================
-# Grupo 2: datalake-users-internal
-# Permissões: consulta/leitura de databases e tabelas, queries em Athena
-# ==============================================================================
+# Internal users: read access to all zones
 
 resource "aws_iam_group" "datalake_users_internal" {
   name = "datalake-users-internal"
 }
 
 resource "aws_iam_group_policy" "datalake_users_internal_assume_role" {
-  name   = "AllowAssumeInternalUserRole"
-  group  = aws_iam_group.datalake_users_internal.name
+  name  = "AllowAssumeInternalUserRole"
+  group = aws_iam_group.datalake_users_internal.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = "sts:AssumeRole"
+        Effect   = "Allow"
+        Action   = "sts:AssumeRole"
         Resource = aws_iam_role.datalake_users_internal_lf_role.arn
       }
     ]
@@ -121,8 +110,8 @@ resource "aws_iam_group_policy" "datalake_users_internal_assume_role" {
 }
 
 resource "aws_iam_group_policy" "datalake_users_internal_basic" {
-  name   = "DatalakeInternalUserBasic"
-  group  = aws_iam_group.datalake_users_internal.name
+  name  = "DatalakeInternalUserBasic"
+  group = aws_iam_group.datalake_users_internal.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -159,24 +148,21 @@ resource "aws_iam_group_policy_attachment" "datalake_users_internal_governed_tab
   policy_arn = aws_iam_policy.lf_governed_table_policy.arn
 }
 
-# ==============================================================================
-# Grupo 3: datalake-users-external
-# Permissões: acesso compartilhado via API/interface; apenas business tables
-# ==============================================================================
+# External users: read access limited to business tables
 
 resource "aws_iam_group" "datalake_users_external" {
   name = "datalake-users-external"
 }
 
 resource "aws_iam_group_policy" "datalake_users_external_assume_role" {
-  name   = "AllowAssumeExternalUserRole"
-  group  = aws_iam_group.datalake_users_external.name
+  name  = "AllowAssumeExternalUserRole"
+  group = aws_iam_group.datalake_users_external.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = "sts:AssumeRole"
+        Effect   = "Allow"
+        Action   = "sts:AssumeRole"
         Resource = aws_iam_role.datalake_users_external_lf_role.arn
       }
     ]
@@ -184,8 +170,8 @@ resource "aws_iam_group_policy" "datalake_users_external_assume_role" {
 }
 
 resource "aws_iam_group_policy" "datalake_users_external_basic" {
-  name   = "DatalakeExternalUserBasic"
-  group  = aws_iam_group.datalake_users_external.name
+  name  = "DatalakeExternalUserBasic"
+  group = aws_iam_group.datalake_users_external.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -210,8 +196,8 @@ resource "aws_iam_group_policy" "datalake_users_external_basic" {
 }
 
 resource "aws_iam_group_policy" "datalake_users_external_athena_readonly" {
-  name   = "DatalakeExternalUserAthenaReadOnly"
-  group  = aws_iam_group.datalake_users_external.name
+  name  = "DatalakeExternalUserAthenaReadOnly"
+  group = aws_iam_group.datalake_users_external.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

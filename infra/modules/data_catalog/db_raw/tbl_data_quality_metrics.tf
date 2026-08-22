@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# data_quality_metrics — Data quality metrics table
-# Source: Written by QualityMetrics class (Parquet append)
-# Format: Parquet
-# Partition: reference_date
-# ------------------------------------------------------------------------------
+# Bronze: data quality metrics (Parquet, written by Glue ETL)
 resource "aws_glue_catalog_table" "data_quality_metrics" {
   name          = var.tables.data_quality
   database_name = var.databases.raw
@@ -18,7 +13,7 @@ resource "aws_glue_catalog_table" "data_quality_metrics" {
   }
 
   storage_descriptor {
-    location      = "s3://${var.buckets.raw}/tables/data_quality_metrics/"
+    location      = "${local.tables_root}/${var.tables.data_quality}/"
     input_format  = local.input_format
     output_format = local.output_format
 
@@ -71,11 +66,6 @@ resource "aws_glue_catalog_table" "data_quality_metrics" {
       name    = "technology"
       type    = "string"
       comment = "Technology (e.g. glue)"
-    }
-    columns {
-      name    = "reference_date"
-      type    = "date"
-      comment = "Partition date"
     }
   }
 }

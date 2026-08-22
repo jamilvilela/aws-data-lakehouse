@@ -86,13 +86,7 @@ Create a unified IAM role and policy for data lake analytics services.
 
 | Service | Actions | Scope |
 |---|---|---|
-| S3 | `ListBucket`, `GetBucketLocation`, `GetObject`, `PutObject`, `PutObjectAcl`, `DeleteObject` | `lakehouse-*-*` buckets |
-| Glue | `GetDatabase`, `GetTable`, `CreateTable`, `UpdateTable`, `DeleteTable`, `GetPartition`, `CreatePartition`, `DeletePartition` | `*` |
-| Athena | `StartQueryExecution`, `GetQueryExecution`, `GetQueryResults` | `*` |
-| Step Functions | `StartExecution`, `StopExecution`, `DescribeExecution`, `ListExecutions` | `*` |
-| SNS | `Publish`, `Subscribe` | `*` |
-| SQS | `SendMessage`, `ReceiveMessage`, `DeleteMessage`, `GetQueueAttributes` | `*` |
-| Lake Formation | `GetDataAccess`, `GrantPermissions`, `RevokePermissions` | `*` |
+| S3 | `ListBucket`, `GetBucketLocation`, `GetObject`, `PutObject`, `DeleteObject` | `lakehouse-*-*` buckets |
 
 ### Acceptance Criteria
 - [x] IAM role created with multi-service trust policy
@@ -136,7 +130,7 @@ Centralized data governance using AWS Lake Formation, including resource registr
 | `datalake-admins-lf-role` | Root account trust | Admin LF principal |
 | `datalake-users-internal-lf-role` | Root account trust | Internal user LF principal |
 | `datalake-users-external-lf-role` | Root account trust | External user LF principal |
-| `lakeformation-workflow-role` | Root account trust | ETL workflow execution |
+| `LFWorkflowRole` | `lakeformation.amazonaws.com` service trust | ETL workflow execution |
 
 **F-003.5: IAM Users**
 
@@ -146,14 +140,14 @@ Centralized data governance using AWS Lake Formation, including resource registr
 | `datalake-user-01` | `datalake-users-internal` |
 
 **F-003.6: Location Permissions**
-- `DATA_LOCATION_ACCESS` grants for each principal × bucket combination:
+- `DATA_LOCATION_ACCESS` grants for each principal × bucket combination (raw, trusted, and business are registered as LF resources):
 
-| Principal | Landing | Raw | Trusted | Business |
-|---|---|---|---|---|
-| `datalake-admins-lf-role` | ❌ | ✅ | ✅ | ✅ |
-| `datalake-users-internal-lf-role` | ❌ | ✅ | ✅ | ✅ |
-| `datalake-users-external-lf-role` | ❌ | ❌ | ❌ | ✅ |
-| `datalake-role-arn` (service role) | ❌ | ✅ | ✅ | ✅ |
+| Principal | Raw | Trusted | Business |
+|---|---|---|---|
+| `datalake-admins-lf-role` | ✅ | ✅ | ✅ |
+| `datalake-users-internal-lf-role` | ✅ | ✅ | ✅ |
+| `datalake-users-external-lf-role` | ❌ | ❌ | ✅ |
+| `role-datalake-analytics` (service role) | ✅ | ✅ | ✅ |
 
 ### Acceptance Criteria
 - [x] Lake Formation Data Lake Settings configured
@@ -186,24 +180,27 @@ Create and manage AWS Glue Catalog databases and tables for metadata management,
 
 #### Tables
 
-**T-001: `opensky_flights`** (Raw Database)
-- Format: Parquet (Snappy compressed)
-- Partition: `event_date` (date)
-- Location: `s3://{raw}/tables/opensky_flights/`
-- Database: `db_raw`
-- Columns: `icao24`, `callsign`, `origin_country`, `latitude`, `longitude`, `altitude`, `velocity`, `heading`, `last_contact`, `event_time`, `location`
+**Delta Lake tables** (bronze) — partitioned by `event_date` (date), location `s3://{raw}/tables/{table}/` (except `tbl_aircraft_positions`, partitioned by `aircraft_icao24`):
 
-**T-002: `etl_execution_control`** (Raw Zone)
-- Format: Parquet
-- Partition: `reference_date` (date)
-- Location: `s3://{raw}/tables/etl_control/`
-- Columns: `target_table_name`, `execution_start_timestamp`, `execution_end_timestamp`, `target_partition`, `source_tables` (array of structs)
+| ID | Table | Source | Columns |
+|---|---|---|---|
+| T-001 | `tbl_aircraft` | `flight_radar.aircraft` | `icao24`, `registration`, `aircraft_type`, `serial_number`, `operator_icao`, `operator_name`, `year_built`, `created_at`, `updated_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| T-002 | `tbl_airports` | `flight_radar.airports` | `id`, `ident`, `type`, `name`, `latitude_deg`, `longitude_deg`, `elevation_ft`, `continent`, `iso_country`, `iso_region`, `municipality`, `scheduled_service`, `icao_code`, `iata_code`, `gps_code`, `local_code`, `home_link`, `wikipedia_link`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| T-003 | `tbl_airlines` | `flight_radar.airlines` | `id`, `name`, `alias`, `iata_code`, `icao_code`, `callsign`, `country`, `is_active`, `created_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| T-004 | `tbl_flights` | `flight_radar.flights` | `flight_id`, `flight_number`, `airline_icao`, `aircraft_icao24`, `origin_airport`, `destination_airport`, `scheduled_departure`, `scheduled_arrival`, `actual_departure`, `actual_arrival`, `status`, `created_at`, `updated_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| T-005 | `tbl_aircraft_positions` | `flight_radar.aircraft_positions` | `position_id`, `aircraft_icao24`, `flight_id`, `latitude`, `longitude`, `altitude_ft`, `velocity_kts`, `heading`, `vertical_rate_fpm`, `on_ground`, `recorded_at`, `ingested_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| T-006 | `tbl_countries` | `flight_radar.countries` | `id`, `code`, `name`, `continent`, `wikipedia_link`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| T-007 | `tbl_aircraft_types` | `flight_radar.aircraft_types` | `icao_code`, `iata_code`, `name`, `manufacturer`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| T-008 | `tbl_routes` | `flight_radar.routes` | `id`, `airline_iata`, `airline_id`, `src_airport`, `src_airport_id`, `dst_airport`, `dst_airport_id`, `codeshare`, `stops`, `equipment`, `duration_minutes`, `created_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
 
-**T-003: `data_quality_metrics`** (Raw Zone)
-- Format: Parquet
-- Partition: `reference_date` (date)
-- Location: `s3://{raw}/tables/data_quality_metrics/`
-- Columns: `database`, `processing_timestamp`, `metric`, `failure_reason`, `status`, `partition`, `rule`, `table`, `technology`
+> `tbl_aircraft_positions` is partitioned by `aircraft_icao24` (string) for partition pruning by aircraft. `tbl_flights` derives its `event_date` partition from `scheduled_departure` (`%Y-%m-%d`).
+
+**Parquet tables** (pipeline control) — partitioned by `reference_date` (date):
+
+| ID | Table | Purpose | Columns |
+|---|---|---|---|
+| T-009 | `etl_control` | Pipeline execution control | `execution_id`, `job_name`, `source`, `execution_start`, `execution_end`, `status`, `records_read`, `records_written`, `records_rejected`, `target_partition`, `error_message` |
+| T-010 | `data_quality_metrics` | Data quality checks | `database`, `table`, `processing_timestamp`, `metric`, `rule`, `status`, `failure_reason`, `partition`, `technology` |
 
 ### Lake Formation Permissions on Catalog
 
@@ -213,14 +210,14 @@ Create and manage AWS Glue Catalog databases and tables for metadata management,
 
 | Principal | Raw | Trusted | Business |
 |---|---|---|---|
-| `datalake-role-arn` (service) | Full DML | Full DML | Full DML |
+| `role-datalake-analytics` (service) | Full DML | Full DML | Full DML |
 | `datalake-admins-lf-role` | Full DML | Full DML | Full DML |
 | `datalake-users-internal-lf-role` | DESCRIBE, SELECT | DESCRIBE, SELECT | DESCRIBE, SELECT |
 | `datalake-users-external-lf-role` | ❌ | ❌ | DESCRIBE, SELECT |
 
 ### Acceptance Criteria
 - [x] 3 Glue databases created with correct locations
-- [x] 3 Glue tables created with correct schemas and partitions
+- [x] 10 Glue tables created with correct schemas and partitions
 - [x] Database-level DESCRIBE permissions granted
 - [x] Table-level permissions granted per 3-tier model
 - [x] Service role has full DML access to all tables
@@ -292,15 +289,16 @@ Shell scripts for automated deployment and teardown with proper role assumption.
 
 ### Scripts
 
-**`setup.sh`**
+**`ci-cd/deploy.sh`**
 - Loads `.env` file
 - Assumes `datalake-admins-lf-role` via `sts:assume-role`
 - Runs `terraform init`, `validate`, `plan`, `apply`
 - Validates deployment (groups, roles, databases)
 
-**`destroy.sh`**
+**`ci-cd/destroy.sh`**
 - Loads `.env` file
 - Assumes `datalake-admins-lf-role`
+- Requires typing `destroy_all` to confirm the destructive operation
 - Runs `terraform destroy -auto-approve`
 
 ### Acceptance Criteria

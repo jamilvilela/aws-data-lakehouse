@@ -67,9 +67,9 @@
 
 | # | Check | Standard | Status | Notes |
 |---|---|---|---|---|
-| 5.1 | Database cataloging | All zones cataloged | ✅ | 4 databases created |
+| 5.1 | Database cataloging | All zones cataloged | ✅ | 3 databases created |
 | 5.2 | Table schemas | Columns typed and documented | ✅ | All tables have typed columns + comments |
-| 5.3 | Partitioning | Date-based partitions | ✅ | All tables partitioned by date |
+| 5.3 | Partitioning | Date-based partitions | ✅ | `event_date` on most tables; `aircraft_icao24` on `tbl_aircraft_positions` |
 | 5.4 | Schema versioning | Table versions tracked | ✅ | Glue native |
 | 5.5 | Connection to data sources | JDBC/Network connections | ❌ | Not configured |
 | 5.6 | Crawlers | For automatic schema discovery | ❌ | Not configured |
@@ -125,25 +125,20 @@
 ### Deploy
 
 ```bash
-# 1. Load environment
-source .env
+# 1. Load environment and assume LF admin role
+# (automatic in ci-cd/deploy.sh)
 
-# 2. Assume LF admin role
-# (automatic in setup.sh)
-
-# 3. Deploy
-cd infra
-terraform init
-terraform plan -var-file="tfvars/terraform.tfvars"
-terraform apply -var-file="tfvars/terraform.tfvars" -auto-approve
+# 2. Deploy
+./ci-cd/deploy.sh
 ```
 
 ### Destroy
 
 ```bash
-source .env
-cd infra
-terraform destroy -var-file="tfvars/terraform.tfvars" -auto-approve
+# Load environment and assume LF admin role
+# (automatic in ci-cd/destroy.sh)
+
+./ci-cd/destroy.sh
 ```
 
 ### Validate
@@ -163,7 +158,7 @@ aws glue get-databases --query 'DatabaseList[].Name'
 
 | Symptom | Likely Cause | Resolution |
 |---|---|---|
-| `AccessDeniedException` | Not running as LF admin | Assume `datalake-admins-lf-role` via setup.sh |
+| `AccessDeniedException` | Not running as LF admin | Assume `datalake-admins-lf-role` via ci-cd/deploy.sh |
 | Lake Formation "Resource Not Found" | S3 location not registered | Verify `aws_lakeformation_resource` exists |
 | Glue table `ACCESS DENIED` | LF permissions not granted | Check `aws_lakeformation_permissions` grants |
 | Terraform state lock | Concurrent operation | Delete stale lock in DynamoDB (not configured yet) |

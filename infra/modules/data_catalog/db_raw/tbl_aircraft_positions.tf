@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# tbl_aircraft_positions — Aircraft positions (high volume, streaming)
-# Source: DMS CDC from flight_radar.aircraft_positions (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: position_id, recorded_at
-# ------------------------------------------------------------------------------
+# Bronze: aircraft positions (Delta Lake, CDC from flight_radar.aircraft_positions)
 resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
   name          = var.tables.tbl_aircraft_positions
   database_name = var.databases.raw
@@ -13,29 +8,30 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
   parameters = local.delta_parameters
 
   partition_keys {
-    name = local.delta_partition_key.name
-    type = local.delta_partition_key.type
+    name    = "aircraft_icao24"
+    type    = "string"
+    comment = "Aircraft ICAO24 address - partition pruning by aircraft"
   }
 
   storage_descriptor {
-    location      = "s3://${var.buckets.raw}/tables/tbl_aircraft_positions/"
+    location      = "${local.tables_root}/${var.tables.tbl_aircraft_positions}/"
     input_format  = local.input_format
     output_format = local.output_format
 
     ser_de_info {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
+
+      parameters = {
+        "serialization.format" = "1"
+        "path"                 = "${local.tables_root}/${var.tables.tbl_aircraft_positions}/"
+      }
     }
 
     columns {
       name    = "position_id"
       type    = "bigint"
       comment = "Position ID (PK)"
-    }
-    columns {
-      name    = "aircraft_icao24"
-      type    = "string"
-      comment = "Aircraft ICAO24 address (FK → aircraft)"
     }
     columns {
       name    = "flight_id"
@@ -88,17 +84,17 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
       comment = "Ingestion timestamp"
     }
     columns {
-      name    = "dms_operation"
+      name    = "cdc_operation"
       type    = "string"
-      comment = "DMS CDC operation (I/U/D)"
+      comment = "CDC operation type (I/U/D)"
     }
     columns {
-      name    = "dms_timestamp"
+      name    = "cdc_timestamp"
       type    = "timestamp"
-      comment = "DMS capture timestamp"
+      comment = "CDC capture timestamp"
     }
     columns {
-      name    = "cod_unico"
+      name    = "cod_unique"
       type    = "string"
       comment = "PK concatenation (position_id_recorded_at)"
     }

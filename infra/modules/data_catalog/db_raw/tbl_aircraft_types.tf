@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# tbl_aircraft_types — Aircraft type catalog (models)
-# Source: DMS CDC from flight_radar.aircraft_types (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: icao_code
-# ------------------------------------------------------------------------------
+# Bronze: aircraft type catalog (Delta Lake, CDC from flight_radar.aircraft_types)
 resource "aws_glue_catalog_table" "tbl_aircraft_types" {
   name          = var.tables.tbl_aircraft_types
   database_name = var.databases.raw
@@ -18,13 +13,18 @@ resource "aws_glue_catalog_table" "tbl_aircraft_types" {
   }
 
   storage_descriptor {
-    location      = "s3://${var.buckets.raw}/tables/tbl_aircraft_types/"
+    location      = "${local.tables_root}/${var.tables.tbl_aircraft_types}/"
     input_format  = local.input_format
     output_format = local.output_format
 
     ser_de_info {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
+
+      parameters = {
+        "serialization.format" = "1"
+        "path"                 = "${local.tables_root}/${var.tables.tbl_aircraft_types}/"
+      }
     }
 
     columns {
@@ -45,10 +45,20 @@ resource "aws_glue_catalog_table" "tbl_aircraft_types" {
     columns {
       name    = "manufacturer"
       type    = "string"
-      comment = "Manufacturer name"
+      comment = "Manufacturer name (generated in source via CASE expression)"
     }
     columns {
-      name    = "cod_unico"
+      name    = "cdc_operation"
+      type    = "string"
+      comment = "CDC operation type (I/U/D)"
+    }
+    columns {
+      name    = "cdc_timestamp"
+      type    = "timestamp"
+      comment = "CDC capture timestamp"
+    }
+    columns {
+      name    = "cod_unique"
       type    = "string"
       comment = "PK concatenation (icao_code)"
     }

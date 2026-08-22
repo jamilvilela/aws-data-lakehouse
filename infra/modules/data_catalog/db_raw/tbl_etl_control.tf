@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# etl_control — Pipeline execution control table
-# Source: Written by EtlControl class (Parquet append)
-# Format: Parquet
-# Partition: reference_date
-# ------------------------------------------------------------------------------
+# Bronze: pipeline execution control (Parquet, written by Glue ETL)
 resource "aws_glue_catalog_table" "etl_control" {
   name          = var.tables.etl_control
   database_name = var.databases.raw
@@ -18,7 +13,7 @@ resource "aws_glue_catalog_table" "etl_control" {
   }
 
   storage_descriptor {
-    location      = "s3://${var.buckets.raw}/tables/etl_control/"
+    location      = "${local.tables_root}/${var.tables.etl_control}/"
     input_format  = local.input_format
     output_format = local.output_format
 

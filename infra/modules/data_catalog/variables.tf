@@ -8,7 +8,11 @@ variable "datalake_role_arn" {
   description = "ARN of the datalake service role (Glue, EMR, etc)"
 }
 
-# Variáveis para as 3 roles LF de acesso por grupo
+variable "datalake_job_role_arn" {
+  type        = string
+  description = "ARN of the Glue job role that writes to the raw layer"
+}
+
 variable "datalake_admins_principal_arn" {
   type        = string
   description = "ARN of the datalake-admins-lf-role (used as LF principal)"
@@ -24,10 +28,9 @@ variable "datalake_users_external_principal_arn" {
   description = "ARN of the datalake-users-external-lf-role (used as LF principal)"
 }
 
-# Mantendo para compatibilidade (comentado, será descontinuado)
 variable "lake_admin_arn" {
   type        = string
-  description = "ARN of the lake-admin user (deprecated; use datalake_admins_principal_arn instead)"
+  description = "ARN of the lake-admin user (deprecated)"
   default     = ""
 }
 

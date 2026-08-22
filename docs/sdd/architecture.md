@@ -161,7 +161,7 @@ graph TD
             RAdmin[datalake-admins-lf-role]
             RInternal[datalake-users-internal-lf-role]
             RExternal[datalake-users-external-lf-role]
-            RWorkflow[lakeformation-workflow-role]
+            RWorkflow[LFWorkflowRole]
             RService[role-datalake-analytics]
         end
 
@@ -173,7 +173,7 @@ graph TD
 
         subgraph "Glue Catalog"
             GLDB[Databases<br/>raw, trusted, business]
-            GLTables[Tables<br/>opensky, etl_control, data_quality]
+            GLTables[Tables<br/>aircraft, flights, etl_control]
         end
 
         Admin --> GAdmin
@@ -201,17 +201,21 @@ graph TD
 
 | Policy Name | Type | Attached To | Purpose |
 |---|---|---|---|
-| `datalake-policy` | Customer managed | `role-datalake-analytics` | Cross-service data lake access |
+| `datalake-policy` | Customer managed | `role-datalake-analytics` | S3 access to the data lake zones |
 | `AllowAssumeAdminRole` | Inline (group) | `datalake-admins` | `sts:AssumeRole` → admin LF role |
 | `AllowAssumeInternalUserRole` | Inline (group) | `datalake-users-internal` | `sts:AssumeRole` → internal LF role |
 | `AllowAssumeExternalUserRole` | Inline (group) | `datalake-users-external` | `sts:AssumeRole` → external LF role |
 | `AdminLakeFormationPolicy` | Inline (role) | `datalake-admins-lf-role` | Full LF/Glue/IAM admin |
-| `LFWorkflowSelfPassRole` | Customer managed | `lakeformation-workflow-role` | Self pass-role for workflows |
-| `LFUserPassRole` | Customer managed | `datalake-admins` group | Pass LF service-linked role |
-| `LFRamAccess` | Customer managed | `datalake-admins` group | RAM sharing for cross-account |
-| `LFGovernedTablePolicy` | Customer managed | `datalake-users-internal` group | Governed table operations |
+| `InternalUserLakeFormationPolicy` | Inline (role) | `datalake-users-internal-lf-role` | Read access to catalog and S3 |
+| `ExternalUserLakeFormationPolicy` | Inline (role) | `datalake-users-external-lf-role` | Read access to business catalog |
 | `DatalakeInternalUserBasic` | Inline (group) | `datalake-users-internal` | Read-only Glue/LF access |
 | `DatalakeExternalUserBasic` | Inline (group) | `datalake-users-external` | Read-only Glue/LF access |
+| `DatalakeExternalUserAthenaReadOnly` | Inline (group) | `datalake-users-external` | Read-only Athena queries |
+| `LakeFormationSLR` | Inline (group) | `datalake-admins` | Create and manage the LF service-linked role |
+| `LFWorkflowSelfPassRole` | Customer managed | `LFWorkflowRole` | Self pass-role for workflows |
+| `LFUserPassRole` | Customer managed | `datalake-admins` | Pass LF service-linked role |
+| `LFRamAccess` | Customer managed | `datalake-admins` | RAM sharing for cross-account |
+| `LFGovernedTablePolicy` | Customer managed | `datalake-users-internal` | Governed table operations |
 
 ---
 
@@ -230,52 +234,27 @@ graph TD
 
 ### Database: `db_raw`
 
-**Table: `opensky_flights`**
-- **S3 Location:** `s3://{raw}/tables/opensky_flights/`
-- **Format:** Parquet (Snappy compressed)
-- **Partition:** `event_date` (date)
+**Delta Lake tables** (bronze layer) — CDC from Aurora PostgreSQL via DMS. Partitioned by `event_date` (date), except `tbl_aircraft_positions` which is partitioned by `aircraft_icao24` (string). Snappy-compressed Parquet files managed by Delta Lake.
 
-| Column | Type | Description |
+| Table | Source | Columns |
 |---|---|---|
-| `icao24` | `string` | Transponder identifier |
-| `callsign` | `string` | Flight callsign |
-| `origin_country` | `string` | Origin country |
-| `latitude` | `double` | Latitude coordinate |
-| `longitude` | `double` | Longitude coordinate |
-| `altitude` | `double` | Altitude in meters |
-| `velocity` | `double` | Velocity in m/s |
-| `heading` | `double` | Heading in degrees |
-| `last_contact` | `bigint` | Last contact timestamp |
-| `event_time` | `string` | Event timestamp |
-| `location` | `string` | Location description |
-| **Partition** | | |
-| `event_date` | `date` | Flight date |
+| `tbl_aircraft` | `flight_radar.aircraft` | `icao24`, `registration`, `aircraft_type`, `serial_number`, `operator_icao`, `operator_name`, `year_built`, `created_at`, `updated_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| `tbl_airports` | `flight_radar.airports` | `id`, `ident`, `type`, `name`, `latitude_deg`, `longitude_deg`, `elevation_ft`, `continent`, `iso_country`, `iso_region`, `municipality`, `scheduled_service`, `icao_code`, `iata_code`, `gps_code`, `local_code`, `home_link`, `wikipedia_link`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| `tbl_airlines` | `flight_radar.airlines` | `id`, `name`, `alias`, `iata_code`, `icao_code`, `callsign`, `country`, `is_active`, `created_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| `tbl_flights` | `flight_radar.flights` | `flight_id`, `flight_number`, `airline_icao`, `aircraft_icao24`, `origin_airport`, `destination_airport`, `scheduled_departure`, `scheduled_arrival`, `actual_departure`, `actual_arrival`, `status`, `created_at`, `updated_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| `tbl_aircraft_positions` | `flight_radar.aircraft_positions` | `position_id`, `aircraft_icao24`, `flight_id`, `latitude`, `longitude`, `altitude_ft`, `velocity_kts`, `heading`, `vertical_rate_fpm`, `on_ground`, `recorded_at`, `ingested_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| `tbl_countries` | `flight_radar.countries` | `id`, `code`, `name`, `continent`, `wikipedia_link`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| `tbl_aircraft_types` | `flight_radar.aircraft_types` | `icao_code`, `iata_code`, `name`, `manufacturer`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
+| `tbl_routes` | `flight_radar.routes` | `id`, `airline_iata`, `airline_id`, `src_airport`, `src_airport_id`, `dst_airport`, `dst_airport_id`, `codeshare`, `stops`, `equipment`, `duration_minutes`, `created_at`, `cdc_operation`, `cdc_timestamp`, `cod_unique` |
 
-**Table: `etl_execution_control`**
-| Column | Type | Description |
-|---|---|---|
-| `target_table_name` | `string` | Target table name |
-| `execution_start_timestamp` | `timestamp` | Execution start |
-| `execution_end_timestamp` | `timestamp` | Execution end |
-| `target_partition` | `string` | Target partition |
-| `source_tables` | `array<struct<...>>` | Source tables & partitions |
-| **Partition** | | |
-| `reference_date` | `date` | Reference date |
+> `tbl_aircraft_positions` is partitioned by `aircraft_icao24` (string) for partition pruning by aircraft. `tbl_flights` derives its `event_date` partition from `scheduled_departure` (`%Y-%m-%d`).
 
-**Table: `data_quality_metrics`**
-| Column | Type | Description |
+**Parquet tables** (pipeline control, written by Glue ETL). Partitioned by `reference_date` (date).
+
+| Table | Purpose | Columns |
 |---|---|---|
-| `database` | `string` | Database name |
-| `processing_timestamp` | `timestamp` | Processing timestamp |
-| `metric` | `string` | Metric type |
-| `failure_reason` | `string` | Failure reason |
-| `status` | `string` | Evaluation status |
-| `partition` | `string` | Partition evaluated |
-| `rule` | `string` | Quality rule applied |
-| `table` | `string` | Table evaluated |
-| `technology` | `string` | Technology used |
-| **Partition** | | |
-| `reference_date` | `date` | Reference date |
+| `etl_control` | Pipeline execution control | `execution_id`, `job_name`, `source`, `execution_start`, `execution_end`, `status`, `records_read`, `records_written`, `records_rejected`, `target_partition`, `error_message` |
+| `data_quality_metrics` | Data quality checks | `database`, `table`, `processing_timestamp`, `metric`, `rule`, `status`, `failure_reason`, `partition`, `technology` |
 
 ---
 
@@ -305,13 +284,13 @@ graph TD
 - ✅ Easier Lake Formation resource registration
 - ⚠️ Higher bucket count to manage
 
-### Decision 3: Parquet Format with Snappy Compression
+### Decision 3: Delta Lake for Bronze, Parquet for Control Tables
 
-**Context:** Glue tables need efficient storage and query performance.
+**Context:** Bronze tables receive CDC streams from Aurora PostgreSQL via DMS and need ACID semantics, while pipeline control tables are appended by Glue ETL jobs.
 
-**Decision:** Use Parquet with Snappy compression for all Glue tables.
+**Decision:** Use Delta Lake for bronze tables (with `spark.sql.sources.provider = delta`) and Parquet with Snappy compression for `etl_control` and `data_quality_metrics`.
 
 **Consequences:**
+- ✅ ACID transactions and time travel on bronze CDC data
 - ✅ Columnar storage for efficient Athena queries
 - ✅ Snappy balances compression ratio and speed
-- ✅ Industry standard for AWS analytics

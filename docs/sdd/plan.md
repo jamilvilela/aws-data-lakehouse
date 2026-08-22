@@ -91,13 +91,13 @@
 | Step | Module | Description | Status |
 |---|---|---|---|
 | 4.1 | Catalog | Create Glue databases (raw, trusted, business) | ✅ Complete |
-| 4.2 | Catalog | Create `opensky_flights` table (landing, parquet) | ✅ Complete |
-| 4.3 | Catalog | Create `etl_execution_control` table (raw, parquet) | ✅ Complete |
-| 4.4 | Catalog | Create `data_quality_metrics` table (raw, parquet) | ✅ Complete |
+| 4.2 | Catalog | Create Delta Lake bronze tables (aircraft, airports, airlines, flights, positions, countries, aircraft types, routes) | ✅ Complete |
+| 4.3 | Catalog | Create `etl_control` table (parquet) | ✅ Complete |
+| 4.4 | Catalog | Create `data_quality_metrics` table (parquet) | ✅ Complete |
 | 4.5 | Catalog | Grant LF database-level permissions | ✅ Complete |
 | 4.6 | Catalog | Grant LF table-level permissions | ✅ Complete |
 
-**Partitioning Strategy:** All tables use date-based partitioning (`event_date` or `reference_date`).
+**Partitioning Strategy:** Delta Lake tables are partitioned by `event_date` (date) — `tbl_flights` derives it from `scheduled_departure` (`%Y-%m-%d`) — except `tbl_aircraft_positions`, which is partitioned by `aircraft_icao24` (string). Parquet tables use `reference_date` (date).
 
 ---
 
@@ -105,24 +105,25 @@
 
 | Step | Description | Status |
 |---|---|---|
-| 5.1 | `setup.sh` — Full deploy with role assumption | ✅ Complete |
-| 5.2 | `destroy.sh` — Full teardown with role assumption | ✅ Complete |
+| 5.1 | `ci-cd/deploy.sh` — Full deploy with role assumption | ✅ Complete |
+| 5.2 | `ci-cd/destroy.sh` — Full teardown with role assumption | ✅ Complete |
 | 5.3 | `.env` loading and validation | ✅ Complete |
 | 5.4 | Post-deploy validation (groups, roles, databases) | ✅ Complete |
 
 ---
 
-### Phase 6: Documentation & SDD 🚧 (Current)
+### Phase 6: Documentation & SDD ✅
 
 | Step | Description | Status |
 |---|---|---|
-| 6.1 | Reverse engineer existing Terraform into SDD docs | ✅ Complete |
-| 6.2 | Create `agents.md` — AI agent definitions | ✅ Complete |
-| 6.3 | Create `plan.md` — Development roadmap | ✅ Complete |
-| 6.4 | Create `prod.md` — Production readiness | 🚧 In Progress |
-| 6.5 | Create `feature.md` — Feature specifications | ⬜ Pending |
-| 6.6 | Create `skill.md` — Agent skills | ⬜ Pending |
-| 6.7 | Create ADRs for key decisions | ⬜ Pending |
+| 6.1 | Create `agents.md` — AI agent definitions | ✅ Complete |
+| 6.2 | Create `plan.md` — Development roadmap | ✅ Complete |
+| 6.3 | Create `architecture.md` — Architecture reference | ✅ Complete |
+| 6.4 | Create `feature.md` — Feature specifications | ✅ Complete |
+| 6.5 | Create `prod.md` — Production readiness | ✅ Complete |
+| 6.6 | Create `skill.md` — Agent skills | ✅ Complete |
+| 6.7 | Create `glossary.md` — Terminology | ✅ Complete |
+| 6.8 | Create ADRs for key decisions | ✅ Complete |
 
 ---
 
@@ -164,7 +165,7 @@ graph TB
     end
 
     subgraph "Catalog & Analytics"
-        J[Glue Data Catalog<br/>4 databases, 3 tables]
+        J[Glue Data Catalog<br/>3 databases, 10 tables]
         K[Athena<br/>Serverless SQL]
     end
 
@@ -194,10 +195,10 @@ graph TB
 | Terraform modules | 4 (s3, iam, lakeformation, data_catalog) |
 | S3 buckets | 5 (workspace, landing, raw, trusted, business) |
 | Glue databases | 3 (raw, trusted, business) |
-| Glue tables | 3 (opensky_flights, etl_control, data_quality) |
+| Glue tables | 10 (8 Delta + etl_control + data_quality_metrics) |
 | IAM roles | 5 (1 analytics + 3 LF + 1 workflow) |
 | IAM groups | 3 (admins, internal, external) |
-| IAM users | 2 (datalake-admin, datalake-user1) |
-| IAM policies | 6 (1 main + 5 auxiliary) |
+| IAM users | 2 (datalake-admin, datalake-user-01) |
+| IAM policies | 5 (1 main + 4 auxiliary) |
 | Lake Formation resources | 3 (raw, trusted, business) |
-| LF permissions | ~30 grants (locations, databases, tables) |
+| LF permissions | ~27 grants (locations, databases, tables) |

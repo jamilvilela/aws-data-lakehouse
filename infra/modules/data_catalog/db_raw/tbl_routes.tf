@@ -1,9 +1,4 @@
-# ------------------------------------------------------------------------------
-# tbl_routes — Route catalog between airports
-# Source: DMS CDC from flight_radar.routes (Aurora PostgreSQL)
-# Format: Delta Lake
-# PK: id
-# ------------------------------------------------------------------------------
+# Bronze: route catalog (Delta Lake, CDC from flight_radar.routes)
 resource "aws_glue_catalog_table" "tbl_routes" {
   name          = var.tables.tbl_routes
   database_name = var.databases.raw
@@ -18,13 +13,18 @@ resource "aws_glue_catalog_table" "tbl_routes" {
   }
 
   storage_descriptor {
-    location      = "s3://${var.buckets.raw}/tables/tbl_routes/"
+    location      = "${local.tables_root}/${var.tables.tbl_routes}/"
     input_format  = local.input_format
     output_format = local.output_format
 
     ser_de_info {
       name                  = local.delta_ser_de.name
       serialization_library = local.delta_ser_de.serialization_library
+
+      parameters = {
+        "serialization.format" = "1"
+        "path"                 = "${local.tables_root}/${var.tables.tbl_routes}/"
+      }
     }
 
     columns {
@@ -88,7 +88,17 @@ resource "aws_glue_catalog_table" "tbl_routes" {
       comment = "Record creation timestamp"
     }
     columns {
-      name    = "cod_unico"
+      name    = "cdc_operation"
+      type    = "string"
+      comment = "CDC operation type (I/U/D)"
+    }
+    columns {
+      name    = "cdc_timestamp"
+      type    = "timestamp"
+      comment = "CDC capture timestamp"
+    }
+    columns {
+      name    = "cod_unique"
       type    = "string"
       comment = "PK concatenation (id)"
     }

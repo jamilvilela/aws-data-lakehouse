@@ -33,9 +33,7 @@ output "datalake_user1_arn" {
   value       = aws_iam_user.datalake_user1.arn
 }
 
-# ==============================================================================
-# Outputs para os grupos e roles do novo modelo
-# ==============================================================================
+# Group and role outputs for the 3-tier access model
 
 output "datalake_admins_group_arn" {
   description = "ARN of the datalake-admins IAM group"

@@ -1,5 +1,13 @@
-datalake_role_name = "role-datalake-analytics"
-datalake_policy_name = "datalake-policy"
+# Example Terraform variables file.
+# Copy this file to terraform.tfvars and fill in your own values.
+# terraform.tfvars is gitignored and must never be committed (it may contain
+# account IDs and other sensitive values).
+
+datalake_role_name = ""
+datalake_policy_name = ""
+# Only the role name is required here; the full ARN is assembled in
+# infra/locals.tf using the current AWS account ID.
+datalake_job_role_name = ""
 
 buckets = {
   workspace = "lakehouse-workspace"
@@ -32,9 +40,9 @@ tables = {
 # Estes usuários serão adicionados automaticamente aos grupos correspondentes
 users = {
   datalake_admin = {
-    name = "datalake-admin"
+    name = ""
   }
   datalake_user1 = {
-    name = "datalake-user-01"
+    name = ""
   }
 }

@@ -1,21 +1,28 @@
 # ------------------------------------------------------------------------------
 # Local variables for common Glue Catalog Table configurations
-# These values are shared across all tables in the raw database to reduce
-# duplication and centralize changes.
+# These values are shared across all tables in the raw database (bronze layer)
+# to reduce duplication and centralize changes.
 # ------------------------------------------------------------------------------
 
 locals {
   # ── Common settings for all tables ─────────────────────────────────────
   table_type = "EXTERNAL_TABLE"
 
+  tables_root = "s3://${var.buckets.raw}/tables"
+
   input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
   output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
 
-  # ── Delta Lake tables (DMS CDC from Aurora PostgreSQL) ─────────────────
+  # ── Delta Lake tables (CDC from Aurora PostgreSQL) ─────────────────
+  # spark.sql.sources.provider is required so that Delta Lake (DeltaTable.forName)
+  # recognizes the table as Delta via the Spark catalog — classification/table_type
+  # alone are not enough. Each table also sets a "path" SerDe parameter so the
+  # Athena/Trino Delta connector resolves the table location.
   delta_parameters = {
-    classification  = "delta"
-    table_type      = "delta"
-    compressionType = "snappy"
+    classification               = "delta"
+    table_type                   = "delta"
+    compressionType              = "snappy"
+    "spark.sql.sources.provider" = "delta"
   }
 
   delta_partition_key = {
@@ -30,8 +37,9 @@ locals {
 
   # ── Parquet tables (control/quality) ───────────────────────────────────
   parquet_parameters = {
-    classification  = "parquet"
-    compressionType = "snappy"
+    classification               = "parquet"
+    compressionType              = "snappy"
+    "spark.sql.sources.provider" = "parquet"
   }
 
   parquet_partition_key = {
