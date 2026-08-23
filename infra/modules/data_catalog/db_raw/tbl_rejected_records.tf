@@ -8,8 +8,8 @@ resource "aws_glue_catalog_table" "rejected_records" {
   parameters = local.parquet_parameters
 
   partition_keys {
-    name = "event_date"
-    type = "date"
+    name = local.parquet_partition_key.name
+    type = local.parquet_partition_key.type
   }
 
   storage_descriptor {
