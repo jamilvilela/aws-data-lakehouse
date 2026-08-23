@@ -11,5 +11,6 @@ output "tables" {
     tbl_routes             = aws_glue_catalog_table.tbl_routes.name
     etl_control            = aws_glue_catalog_table.etl_control.name
     data_quality           = aws_glue_catalog_table.data_quality_metrics.name
+    rejected_records       = aws_glue_catalog_table.rejected_records.name
   }
 }

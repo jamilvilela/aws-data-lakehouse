@@ -34,6 +34,7 @@ tables = {
   tbl_routes             = "tbl_routes"
   etl_control            = "etl_control"
   data_quality           = "data_quality_metrics"
+  rejected_records       = "tbl_rejected_records"
 }
 
 # Usuários criados no IAM

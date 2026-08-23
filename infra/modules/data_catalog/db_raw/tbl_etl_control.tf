@@ -40,12 +40,12 @@ resource "aws_glue_catalog_table" "etl_control" {
     columns {
       name    = "execution_start"
       type    = "timestamp"
-      comment = "Execution start"
+      comment = "Execution start timestamp"
     }
     columns {
       name    = "execution_end"
       type    = "timestamp"
-      comment = "Execution end"
+      comment = "Execution end timestamp"
     }
     columns {
       name    = "status"
