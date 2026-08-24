@@ -1,6 +1,6 @@
 # Bronze: aircraft positions (Delta Lake, CDC from flight_radar.aircraft_positions)
-resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
-  name          = var.tables.tbl_aircraft_positions
+resource "aws_glue_catalog_table" "fr_aircraft_positions" {
+  name          = var.tables.fr_aircraft_positions
   database_name = var.databases.raw
 
   table_type = local.table_type
@@ -14,7 +14,7 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
   }
 
   storage_descriptor {
-    location      = "${local.tables_root}/${var.tables.tbl_aircraft_positions}/"
+    location      = "${local.tables_root}/${var.tables.fr_aircraft_positions}/"
     input_format  = local.input_format
     output_format = local.output_format
 
@@ -24,7 +24,7 @@ resource "aws_glue_catalog_table" "tbl_aircraft_positions" {
 
       parameters = {
         "serialization.format" = "1"
-        "path"                 = "${local.tables_root}/${var.tables.tbl_aircraft_positions}/"
+        "path"                 = "${local.tables_root}/${var.tables.fr_aircraft_positions}/"
       }
     }
 

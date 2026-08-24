@@ -69,7 +69,7 @@
 |---|---|---|---|---|
 | 5.1 | Database cataloging | All zones cataloged | ✅ | 3 databases created |
 | 5.2 | Table schemas | Columns typed and documented | ✅ | All tables have typed columns + comments |
-| 5.3 | Partitioning | Date-based partitions | ✅ | `event_date` on most tables; `aircraft_icao24` on `tbl_aircraft_positions` |
+| 5.3 | Partitioning | Date-based partitions | ✅ | `event_date` on most tables; `aircraft_icao24` on `fr_aircraft_positions` |
 | 5.4 | Schema versioning | Table versions tracked | ✅ | Glue native |
 | 5.5 | Connection to data sources | JDBC/Network connections | ❌ | Not configured |
 | 5.6 | Crawlers | For automatic schema discovery | ❌ | Not configured |

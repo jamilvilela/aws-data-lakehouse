@@ -1,6 +1,6 @@
 # Bronze: airports reference (Delta Lake, CDC from flight_radar.airports)
-resource "aws_glue_catalog_table" "tbl_airports" {
-  name          = var.tables.tbl_airports
+resource "aws_glue_catalog_table" "fr_airports" {
+  name          = var.tables.fr_airports
   database_name = var.databases.raw
 
   table_type = local.table_type
@@ -13,7 +13,7 @@ resource "aws_glue_catalog_table" "tbl_airports" {
   }
 
   storage_descriptor {
-    location      = "${local.tables_root}/${var.tables.tbl_airports}/"
+    location      = "${local.tables_root}/${var.tables.fr_airports}/"
     input_format  = local.input_format
     output_format = local.output_format
 
@@ -23,7 +23,7 @@ resource "aws_glue_catalog_table" "tbl_airports" {
 
       parameters = {
         "serialization.format" = "1"
-        "path"                 = "${local.tables_root}/${var.tables.tbl_airports}/"
+        "path"                 = "${local.tables_root}/${var.tables.fr_airports}/"
       }
     }
 

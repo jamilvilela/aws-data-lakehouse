@@ -1,6 +1,6 @@
 # Bronze: flights fact table (Delta Lake, CDC from flight_radar.flights)
-resource "aws_glue_catalog_table" "tbl_flights" {
-  name          = var.tables.tbl_flights
+resource "aws_glue_catalog_table" "fr_flights" {
+  name          = var.tables.fr_flights
   database_name = var.databases.raw
 
   table_type = local.table_type
@@ -13,7 +13,7 @@ resource "aws_glue_catalog_table" "tbl_flights" {
   }
 
   storage_descriptor {
-    location      = "${local.tables_root}/${var.tables.tbl_flights}/"
+    location      = "${local.tables_root}/${var.tables.fr_flights}/"
     input_format  = local.input_format
     output_format = local.output_format
 
@@ -23,7 +23,7 @@ resource "aws_glue_catalog_table" "tbl_flights" {
 
       parameters = {
         "serialization.format" = "1"
-        "path"                 = "${local.tables_root}/${var.tables.tbl_flights}/"
+        "path"                 = "${local.tables_root}/${var.tables.fr_flights}/"
       }
     }
 

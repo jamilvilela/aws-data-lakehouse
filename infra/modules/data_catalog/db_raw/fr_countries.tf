@@ -1,6 +1,6 @@
-# Bronze: aircraft type catalog (Delta Lake, CDC from flight_radar.aircraft_types)
-resource "aws_glue_catalog_table" "tbl_aircraft_types" {
-  name          = var.tables.tbl_aircraft_types
+# Bronze: countries reference (Delta Lake, CDC from flight_radar.countries)
+resource "aws_glue_catalog_table" "fr_countries" {
+  name          = var.tables.fr_countries
   database_name = var.databases.raw
 
   table_type = local.table_type
@@ -13,7 +13,7 @@ resource "aws_glue_catalog_table" "tbl_aircraft_types" {
   }
 
   storage_descriptor {
-    location      = "${local.tables_root}/${var.tables.tbl_aircraft_types}/"
+    location      = "${local.tables_root}/${var.tables.fr_countries}/"
     input_format  = local.input_format
     output_format = local.output_format
 
@@ -23,29 +23,34 @@ resource "aws_glue_catalog_table" "tbl_aircraft_types" {
 
       parameters = {
         "serialization.format" = "1"
-        "path"                 = "${local.tables_root}/${var.tables.tbl_aircraft_types}/"
+        "path"                 = "${local.tables_root}/${var.tables.fr_countries}/"
       }
     }
 
     columns {
-      name    = "icao_code"
-      type    = "string"
-      comment = "ICAO aircraft type code (e.g. B738, A320)"
+      name    = "id"
+      type    = "int"
+      comment = "Country internal ID (PK)"
     }
     columns {
-      name    = "iata_code"
+      name    = "code"
       type    = "string"
-      comment = "IATA aircraft type code (e.g. 738, 320)"
+      comment = "ISO 2-letter country code"
     }
     columns {
       name    = "name"
       type    = "string"
-      comment = "Aircraft model name"
+      comment = "Country name"
     }
     columns {
-      name    = "manufacturer"
+      name    = "continent"
       type    = "string"
-      comment = "Manufacturer name (generated in source via CASE expression)"
+      comment = "Continent code"
+    }
+    columns {
+      name    = "wikipedia_link"
+      type    = "string"
+      comment = "Wikipedia page URL"
     }
     columns {
       name    = "cdc_operation"
@@ -60,7 +65,7 @@ resource "aws_glue_catalog_table" "tbl_aircraft_types" {
     columns {
       name    = "cod_unique"
       type    = "string"
-      comment = "PK concatenation (icao_code)"
+      comment = "PK concatenation (id)"
     }
   }
 }

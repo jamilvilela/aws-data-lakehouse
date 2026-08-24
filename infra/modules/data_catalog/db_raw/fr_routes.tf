@@ -1,6 +1,6 @@
 # Bronze: route catalog (Delta Lake, CDC from flight_radar.routes)
-resource "aws_glue_catalog_table" "tbl_routes" {
-  name          = var.tables.tbl_routes
+resource "aws_glue_catalog_table" "fr_routes" {
+  name          = var.tables.fr_routes
   database_name = var.databases.raw
 
   table_type = local.table_type
@@ -13,7 +13,7 @@ resource "aws_glue_catalog_table" "tbl_routes" {
   }
 
   storage_descriptor {
-    location      = "${local.tables_root}/${var.tables.tbl_routes}/"
+    location      = "${local.tables_root}/${var.tables.fr_routes}/"
     input_format  = local.input_format
     output_format = local.output_format
 
@@ -23,7 +23,7 @@ resource "aws_glue_catalog_table" "tbl_routes" {
 
       parameters = {
         "serialization.format" = "1"
-        "path"                 = "${local.tables_root}/${var.tables.tbl_routes}/"
+        "path"                 = "${local.tables_root}/${var.tables.fr_routes}/"
       }
     }
 

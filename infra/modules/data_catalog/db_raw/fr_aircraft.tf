@@ -1,6 +1,6 @@
 # Bronze: aircraft registry (Delta Lake, CDC from flight_radar.aircraft)
-resource "aws_glue_catalog_table" "tbl_aircraft" {
-  name          = var.tables.tbl_aircraft
+resource "aws_glue_catalog_table" "fr_aircraft" {
+  name          = var.tables.fr_aircraft
   database_name = var.databases.raw
 
   table_type = local.table_type
@@ -13,7 +13,7 @@ resource "aws_glue_catalog_table" "tbl_aircraft" {
   }
 
   storage_descriptor {
-    location      = "${local.tables_root}/${var.tables.tbl_aircraft}/"
+    location      = "${local.tables_root}/${var.tables.fr_aircraft}/"
     input_format  = local.input_format
     output_format = local.output_format
 
@@ -23,7 +23,7 @@ resource "aws_glue_catalog_table" "tbl_aircraft" {
 
       parameters = {
         "serialization.format" = "1"
-        "path"                 = "${local.tables_root}/${var.tables.tbl_aircraft}/"
+        "path"                 = "${local.tables_root}/${var.tables.fr_aircraft}/"
       }
     }
 

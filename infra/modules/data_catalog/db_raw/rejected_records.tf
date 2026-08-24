@@ -50,7 +50,7 @@ resource "aws_glue_catalog_table" "rejected_records" {
     columns {
       name    = "target_table"
       type    = "string"
-      comment = "Target table name (e.g. tbl_flights)"
+      comment = "Target table name (e.g. fr_flights)"
     }
     columns {
       name    = "reject_rule"

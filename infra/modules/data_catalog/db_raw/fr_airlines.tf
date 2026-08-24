@@ -1,6 +1,6 @@
 # Bronze: airlines reference (Delta Lake, CDC from flight_radar.airlines)
-resource "aws_glue_catalog_table" "tbl_airlines" {
-  name          = var.tables.tbl_airlines
+resource "aws_glue_catalog_table" "fr_airlines" {
+  name          = var.tables.fr_airlines
   database_name = var.databases.raw
 
   table_type = local.table_type
@@ -13,7 +13,7 @@ resource "aws_glue_catalog_table" "tbl_airlines" {
   }
 
   storage_descriptor {
-    location      = "${local.tables_root}/${var.tables.tbl_airlines}/"
+    location      = "${local.tables_root}/${var.tables.fr_airlines}/"
     input_format  = local.input_format
     output_format = local.output_format
 
@@ -23,7 +23,7 @@ resource "aws_glue_catalog_table" "tbl_airlines" {
 
       parameters = {
         "serialization.format" = "1"
-        "path"                 = "${local.tables_root}/${var.tables.tbl_airlines}/"
+        "path"                 = "${local.tables_root}/${var.tables.fr_airlines}/"
       }
     }
 
